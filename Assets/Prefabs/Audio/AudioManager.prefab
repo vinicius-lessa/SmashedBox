@@ -1,0 +1,256 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8429842106843627107
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8429842106843627106}
+  - component: {fileID: 8429842106843627105}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8429842106843627106
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8429842106843627107}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8429842106843627105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8429842106843627107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af00f934022edb6439d2f438f1d73660, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: '[TK] Monkey Warhol'
+    clip: {fileID: 8300000, guid: 335fa14a3fbce0846af87083cc4ec44a, type: 3}
+    volume: 0.15
+    pitch: 1
+    spatialBlend: 0
+    loop: 1
+    source: {fileID: 0}
+  - name: '[TK] Theme on Game'
+    clip: {fileID: 8300000, guid: 7a8c37fbfa1cd1e4791eed236c69e272, type: 3}
+    volume: 0.5
+    pitch: 1
+    spatialBlend: 0
+    loop: 1
+    source: {fileID: 0}
+  - name: '[TK] MainMenuTheme'
+    clip: {fileID: 8300000, guid: 0c998ef1a2eb9d04c84d4bd048426794, type: 3}
+    volume: 0.3
+    pitch: 1
+    spatialBlend: 0
+    loop: 1
+    source: {fileID: 0}
+  - name: '[TK] AreYouReadyDubStep'
+    clip: {fileID: 8300000, guid: 0eb1ff6fdf56ad34fa2a90931af54743, type: 3}
+    volume: 0.15
+    pitch: 1
+    spatialBlend: 0
+    loop: 1
+    source: {fileID: 0}
+  - name: '[FX] WoodenCrateDestruction'
+    clip: {fileID: 8300000, guid: 3d770dd605d25874a9414287b924c379, type: 3}
+    volume: 0.6
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] PauseAtivationSound'
+    clip: {fileID: 8300000, guid: b1a73dcb66a5f6641873226cde7e7266, type: 3}
+    volume: 0.6
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] DrumsLevel'
+    clip: {fileID: 8300000, guid: 785f114556dba90488553ff5014fa00f, type: 3}
+    volume: 0.6
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] BigLightwitch'
+    clip: {fileID: 8300000, guid: c7dc4594461fb894b997fe4df6e0db20, type: 3}
+    volume: 0.6
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] LevelCut'
+    clip: {fileID: 8300000, guid: 9027d1c6ad727724c9240904657419d8, type: 3}
+    volume: 0.7
+    pitch: 0.5
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] SwitchButtonSelection'
+    clip: {fileID: 8300000, guid: b18b3af98ae34344e96c0f4505787d70, type: 3}
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] BirdsSinging'
+    clip: {fileID: 8300000, guid: 5c0fa19ab8a55624fbc50ec7b8de6d15, type: 3}
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    loop: 1
+    source: {fileID: 0}
+  - name: '[FX] WindSound'
+    clip: {fileID: 8300000, guid: de38e0fd961ff7c40a28b75aba91167e, type: 3}
+    volume: 0.6
+    pitch: 1
+    spatialBlend: 0
+    loop: 1
+    source: {fileID: 0}
+  - name: '[FX] WaterSound'
+    clip: {fileID: 8300000, guid: f77f7675a3ebe754ba5ad7df8dafe2ce, type: 3}
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    loop: 1
+    source: {fileID: 0}
+  - name: '[FX] BoostSound'
+    clip: {fileID: 8300000, guid: 4737b29220c46a14a92de806e85e058e, type: 3}
+    volume: 0.7
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] YehawScream'
+    clip: {fileID: 8300000, guid: 464929427335d2e49a3000695f4f3175, type: 3}
+    volume: 0.35
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] Eazy'
+    clip: {fileID: 8300000, guid: db02d6612ac9c6b41b711164699d9324, type: 3}
+    volume: 0.35
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] BadFelling'
+    clip: {fileID: 8300000, guid: 7259bdf837f9d0b42b6ef37653821d14, type: 3}
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] GameOverLaught'
+    clip: {fileID: 8300000, guid: 86ea27d4f8ea5e84b9b05eed09630dce, type: 3}
+    volume: 0.6
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] ActorLaught'
+    clip: {fileID: 8300000, guid: fb4037b4879367b4a9c88f7adbbc8659, type: 3}
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] WTFLaught'
+    clip: {fileID: 8300000, guid: 09e212c79f1f3ab47a8cf2d87bd88d4e, type: 3}
+    volume: 0.6
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[TK] SadPiano'
+    clip: {fileID: 8300000, guid: 9e7db9fcbb6fbb54c9538a267afbcdf7, type: 3}
+    volume: 0.6
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] DoitJustDo'
+    clip: {fileID: 8300000, guid: 8222363ecb2fb1d4eb4f9151ebc7d207, type: 3}
+    volume: 0.7
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] No God'
+    clip: {fileID: 8300000, guid: b2ad536e674a68f43bf42105f8a0a28b, type: 3}
+    volume: 0.6
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] WowVoice'
+    clip: {fileID: 8300000, guid: d9a73f0e4df02fb4db3322f4c611f7ee, type: 3}
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] Claps'
+    clip: {fileID: 8300000, guid: d96fca353f2cd1f489b1e81689c6ac26, type: 3}
+    volume: 0.7
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] Yaaay'
+    clip: {fileID: 8300000, guid: a8244a6c84ad28b43a2d5c82ba528a5a, type: 3}
+    volume: 0.7
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] SelectionConfirm'
+    clip: {fileID: 8300000, guid: e576fef32abe8984d9a3887ffa8958b0, type: 3}
+    volume: 1
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] Jump'
+    clip: {fileID: 8300000, guid: 24992c85e07fe124585424bd03e84aa4, type: 3}
+    volume: 0.6
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] Pong'
+    clip: {fileID: 8300000, guid: b7bccf4d2e67b6b429a60e66cbbdbad5, type: 3}
+    volume: 0.5
+    pitch: 1
+    spatialBlend: 0
+    loop: 0
+    source: {fileID: 0}
+  - name: '[FX] HitTextPopUp'
+    clip: {fileID: 8300000, guid: d161e5d5f862c3e4cb90143657927b9e, type: 3}
+    volume: 1
+    pitch: 1
+    spatialBlend: 0.8
+    loop: 0
+    source: {fileID: 0}
