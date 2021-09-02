@@ -1,8 +1,19 @@
-# First Game 3D
+# SMASHED BOX
 
-This Repository contains the Script of the firt game of Vinícius Lessa (C#).
+This Repository contains all the project of the SMASHED BOX game.
 
-Images:
+This is my very first game.
 
-01
+You can download and Play the Build by this link:
+
+https://lesslax.itch.io/smashedbox
+
+
+GamePlay Images:
+
+![Game Main Scene](./welcome.png)
 ![Game Main Scene](./gameScene.png)
+![Game Main Scene](./gamePlay01.png)
+![Game Main Scene](./gamePlay02.png)
+![Game Main Scene](./gamePlay03.png)
+![Game Main Scene](./gamePlay04.png)
