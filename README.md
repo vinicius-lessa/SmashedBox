@@ -11,7 +11,6 @@ https://lesslax.itch.io/smashedbox
 
 GamePlay Images:
 
-![Game Main Scene](./welcome.png)
 ![Game Main Scene](./gameScene.png)
 ![Game Main Scene](./gamePlay01.png)
 ![Game Main Scene](./gamePlay02.png)
