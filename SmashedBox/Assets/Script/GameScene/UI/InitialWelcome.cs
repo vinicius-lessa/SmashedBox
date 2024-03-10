@@ -5,22 +5,22 @@ using UnityEngine.EventSystems;
 using TMPro;
 
 /*
-### - DOC
-
-    Criador(es): VINÍCIUS LESSA (LessLax Studios)
-
-    Data: 19/07/2021
-
-    Descrição:
-        Este scrit está atrelado ao GameObject do tipo UI presente na hieranquia da SCENE "GAME"
-        O mesmo é responsável por apresentar a tela inicial de boas vindas toda vez que o jogo for aberto (caso playerID não esteja preenchido).
-        Além disto, é responsável por capturar e tratar os dados recebidos via input informados pelo player, enviando para consulta no BackEnd.
-
-    LeanTween:
-        https://assetstore.unity.com/packages/tools/animation/leantween-3595
-
-    Formatos de Movimento (Boost - setEase...):
-        https://codepen.io/jhnsnc/pen/LpVXGM    
+* @Documentaion
+* 
+* DESCRIPTION
+*       Este scrit está atrelado ao GameObject do tipo UI presente na hieranquia da SCENE "GAME"
+*       Apresenta tela inicial de boas vindas toda vez que o jogo for aberto (caso playerID não esteja preenchido).
+*       Captura e trata os dados recebidos via input informados pelo player para o 'Scoreboard'
+*
+* DATES
+*      19/07/2021 - Vinícius Lessa (LessLax): Creation of script
+*      10/03/2024 - Vinícius Lessa (LessLax): Start of changes to disable online scoreboarding and connectivity check
+* 
+* NOTES & REFERENCES
+*       LeanTween: https://assetstore.unity.com/packages/tools/animation/leantween-3595
+*       
+*       Formatos de Movimento (Boost - setEase...): https://codepen.io/jhnsnc/pen/LpVXGM
+*
 */
 
 public class InitialWelcome : MonoBehaviour
@@ -100,7 +100,7 @@ public class InitialWelcome : MonoBehaviour
                 // Se for Button
                 if (lastSelectedGameObject.gameObject.GetComponent<Button>() != null)
                 {
-                    // // Debug.Log("É botão");
+                    // Debug.Log("É botão");
                     lastSelectedGameObject.transform.Find("[TMPro] Play").gameObject.GetComponent<TextMeshProUGUI>().color = Color.white;
                 }
             }

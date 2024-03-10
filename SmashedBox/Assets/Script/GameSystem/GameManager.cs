@@ -3,19 +3,18 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 
-// Vídeo Aula:
-// https://youtu.be/fuRxrDVnHMI?list=PLj51HEHhPH1OijNJLh4tBNd6PLoaOThra
-
 /*
-### - DOC
-
-    Criador(es): VINÍCIUS LESSA (LessLax Studios)
-
-    Data: 19/07/2021
-
-    Descrição:
-        AAA
-
+ * @Documentaion
+ * 
+ * DESCRIPTION
+ *      It manages almost everything in the "Game" Scene
+ *      
+ *      Thsi game is based on this Tutorial: https://youtu.be/fuRxrDVnHMI?list=PLj51HEHhPH1OijNJLh4tBNd6PLoaOThra
+ *
+ * DATES
+ *      19/07/2021 - Vinícius Lessa (LessLax): Creation of script
+ *      10/03/2024 - Vinícius Lessa (LessLax): Start of changes to disable online scoreboarding and connectivity check
+ *   
 */
 
 public class GameManager : MonoBehaviour
@@ -172,6 +171,7 @@ public class GameManager : MonoBehaviour
         PlayerHud.gameObject.SetActive(false);
         FindObjectOfType<AudioManager>().Play("[FX] WoodenCrateDestruction"); //  Wooden Box Smashed
 
+        // Sound Design
         if (personalBestTMP < score) {
             FindObjectOfType<AudioManager>().Play("[FX] WowVoice");
         } else {

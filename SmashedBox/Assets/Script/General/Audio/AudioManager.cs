@@ -3,16 +3,15 @@ using System.Collections;
 using UnityEngine;
 
 /*
-### - DOC
-
-    Criador(es): VINÍCIUS LESSA (LessLax Studios)
-
-    Data: 08/07/2021
-
-    Descrição:
-        
-    Definições:
-
+ * @Documentaion
+ * 
+ * DESCRIPTION
+ *      Class responsible for managing all audio features in the game
+ *      
+ * DATES
+ *      08/07/2021 - Vinícius Lessa (LessLax): Creation of script
+ *      10/03/2024 - Vinícius Lessa (LessLax): Inspection of the code and documentation updating
+ *   
 */
 
 public class AudioManager : MonoBehaviour

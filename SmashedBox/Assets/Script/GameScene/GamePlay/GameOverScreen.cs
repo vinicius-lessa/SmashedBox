@@ -5,21 +5,19 @@ using UnityEngine.EventSystems;
 using System.Collections;
 
 /*
-### - DOC
-
-    Criador(es): VINÍCIUS LESSA (LessLax Studios)
-
-    Data: 19/07/2021
-
-    Descrição:
-        AAA
-    
-    LeanTween:
-        https://assetstore.unity.com/packages/tools/animation/leantween-3595
-
-    Formatos de Movimento (Boost - setEase...):
-        https://codepen.io/jhnsnc/pen/LpVXGM
-
+ * @Documentaion
+ * 
+ * DESCRIPTION
+ *      Responsible for showing the GameOver screen when the player is destroyed
+ *
+ * DATES
+ *      19/07/2021 - Vinícius Lessa (LessLax): Creation of script
+ *      10/03/2024 - Vinícius Lessa (LessLax): Start of changes to disable online scoreboarding and connectivity check
+ *
+ * NOTES & REFERENCES
+ *      LeanTween: https://assetstore.unity.com/packages/tools/animation/leantween-3595
+ *      Formatos de Movimento (Boost - setEase...): https://codepen.io/jhnsnc/pen/LpVXGM
+ *
 */
 
 public class GameOverScreen : MonoBehaviour

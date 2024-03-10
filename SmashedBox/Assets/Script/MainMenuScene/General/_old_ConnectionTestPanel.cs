@@ -1,14 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+// 03/10/2024 - This function was discontinued
+
+//using System.Collections;
+//using System.Collections.Generic;
+/*using UnityEngine;
 using UnityEngine.Networking;
 
 public class ConnectionTestPanel : MonoBehaviour
 {
     public GameObject menuPanel;
     public GameObject connectionErrorPanel;
-
-    // Start is called before the first frame update
+    
     private void OnEnable()
     {
         StartCoroutine(CheckInternetConnection());        
@@ -51,4 +52,4 @@ public class ConnectionTestPanel : MonoBehaviour
         
         yield return null;
     }
-}
+}*/

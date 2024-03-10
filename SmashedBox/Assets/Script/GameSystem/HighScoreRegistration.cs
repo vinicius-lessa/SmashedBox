@@ -5,15 +5,15 @@ using UnityEngine.Networking;
 // Video Aula: https://youtu.be/4W90-mh70JY
 
 /*
-### - DOC
-
-    Criador(es): VINÍCIUS LESSA (LessLax Studios)
-
-    Data: 19/07/2021
-
-    Descrição:
-        AAA
-
+ * @Documentaion
+ * 
+ * DESCRIPTION
+ *      ...
+ *
+ * DATES
+ *      19/07/2021 - Vinícius Lessa (LessLax): Creation of script
+ *      10/03/2024 - Vinícius Lessa (LessLax): Start of changes to disable online scoreboarding and connectivity check
+ *   
 */
 
 public class HighScoreRegistration : MonoBehaviour
