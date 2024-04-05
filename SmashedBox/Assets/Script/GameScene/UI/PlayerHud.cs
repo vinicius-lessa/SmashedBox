@@ -1,3 +1,16 @@
+/*
+ * @Documentaion
+ * 
+ * DESCRIPTION
+ *      
+ *
+ * DATES
+ *      2021 - Vinícius Lessa (LessLax): Creation of script 
+ *
+ * NOTES & REFERENCES 
+ *
+*/
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,22 +23,13 @@ public class PlayerHud : MonoBehaviour
     private int Xbox_One_Controller = 0;
     private int PS4_Controller = 0;
 
-    // Start is called before the first frame update
     void OnEnable()
     {
-        StartCoroutine(CheckInput());
-
-        // if (Input.GetJoystickNames().Length == 0) {
-        //     Debug.Log("Keyboard");            
-        //     KeyBoardInstructions.SetActive(true);
-        // } else {
-        //     Debug.Log("Controle");
-        //     Debug.Log(Input.GetJoystickNames());
-        //     GamepadInstructions.SetActive(true);
-        // }
+        StartCoroutine(CheckInput());       
     }
 
-    private void Update() {       
+    private void Update()
+    {
     
         if(Xbox_One_Controller == 1) {
             //do something
@@ -40,7 +44,8 @@ public class PlayerHud : MonoBehaviour
         }            
     }
 
-    IEnumerator CheckInput() {
+    IEnumerator CheckInput()
+    {
         string[] names = Input.GetJoystickNames();
         
         for (int x = 0; x < names.Length; x++){

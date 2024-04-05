@@ -67,13 +67,10 @@ public class MenuManager : MonoBehaviour
     public void QuitGameButton() 
     {
         FindObjectOfType<AudioManager>().Play("[FX] SelectionConfirm");
-
-        // Clears PlayerName
-        // PlayerPrefs.DeleteKey("PlayerName"); // Será carregado opcionalmente no Input do "InitialWelcome"
         
-        PlayerPrefs.DeleteKey("PlayerID");
-        PlayerPrefs.DeleteKey("PlayerPersonalBest");
-        PlayerPrefs.DeleteKey("InternetConnection");
+        // PlayerPrefs.DeleteKey("PlayerID");
+        // PlayerPrefs.DeleteKey("PlayerPersonalBest");
+        // PlayerPrefs.DeleteKey("InternetConnection");
         
         // PlayerPrefs.DeleteAll();
         

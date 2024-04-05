@@ -1,15 +1,14 @@
-using System.Collections.Generic;
-using System.Collections;
-using UnityEngine;
-using TMPro;
-
 /*
  * @Documentaion
  * 
  * DESCRIPTION
- *      It manages almost everything in the "Game" Scene
- *      
- *      Thsi game is based on this Tutorial: https://youtu.be/fuRxrDVnHMI?list=PLj51HEHhPH1OijNJLh4tBNd6PLoaOThra
+ *      Manage UI information
+ *      Get/Set Player's Personal Best Score
+ *      Spawn Stones for the player to avoid
+ *      Enables GameOver Screen 
+ *      Manage Level Shift
+ *
+ *      Based on Tutorial: https://youtu.be/fuRxrDVnHMI
  *
  * DATES
  *      19/07/2021 - Vinícius Lessa (LessLax): Creation of script
@@ -17,27 +16,44 @@ using TMPro;
  *   
 */
 
+/*  
+CHECK / DELETE
+    NetWorkErroImg
+    NetWorkErroImgTwo
+    LoadingIcon
+    LoadingIconTwo
+    highestScoreTMP
+    personalBestTMP
+    idTMP
+    isConnectedServer
+    ParsePlayerScore
+*/
+
+using System.Collections.Generic;
+using System.Collections;
+using UnityEngine;
+using TMPro;
+using UnityEngine.SocialPlatforms.Impl;
+
 public class GameManager : MonoBehaviour
 {
     // # External GameObjs
     public GameOverScreen GameOverScreen;
-    public GameObject killerRock, playerCrate; // Killer, Player
+    public GameObject StonePrefab, PlayerObj; // Killer, Player
     public GameObject NetWorkErroImg, NetWorkErroImgTwo, LoadingIcon, LoadingIconTwo;       // NetWorkError Icons & Loading Icons
     public GameObject PlayerHud;  // Boost Bar & Commands Help
-           
+    public GameObject ScoreUI;
+    public GameObject WelcomeScreen;
+
+    // # Materials
     public Material materialDay , materialNight, materialBlend; // SkyBoxes    
     public Material CRMaterialNight; // CartoonRiver
 
-    // # Levels Seconds
+    // # Levels Shift Time
     private int levelOneEnds    = 50;
     private int levelTwoEnds    = 100;
     private int levelThreeEnds  = 150;
     private int levelFourEnds   = 210;
-
-    // private int levelOneEnds    = 10;
-    // private int levelTwoEnds    = 20;
-    // private int levelThreeEnds  = 30;
-    // private int levelFourEnds   = 40;    
     
     // Player Bloom
     public  Material redBloom, greenBloom, iceBlueBloom; // BloomBox
@@ -56,17 +72,17 @@ public class GameManager : MonoBehaviour
     private Hashtable audioListTHEMES = new Hashtable();
     public static string initialThemeOnGame;
 
-    // Killer Properties
-    private int maxKillerToSpawn;
+    // Stones Properties
+    private int maxStonesToSpawn;
     private float maxDrag;
 
+    // Other Properties
     public static int score;
     private float timer;
-    
-    // Server / Database
+    string playerName;
+
+    // Players ScoreBoard Data
     private int highestScoreTMP, personalBestTMP, idTMP;
-    private bool isConnectedServer = false;
-    private static JSONObject jsonReceivedData; // WEB REQUEST - JSON Scores
     
     // GameOver / Levels
     private static bool gameOver;   
@@ -76,37 +92,66 @@ public class GameManager : MonoBehaviour
     public GameObject hitTextOne, hitTextTwo;
     private static bool comboHit = false;
 
-
+    /*
     // Called by "HighScoreRegistration" and recieves DataBase data (Score)
-    public static void receiveDataGameManager(JSONObject jsonData){
+    public static void ParsePlayerScore(JSONObject jsonData){
+        JSONObject jsonReceivedData;
         jsonReceivedData = jsonData; // Highest Score + Personal Score (2 lines, if it is the same, 1 line)
     }
-    
-    private void Start() {
+    */
+
+    void Start() 
+    {
+        PlayerPrefs.DeleteAll();
+
+        score = 0;
+
         // LevelText Animator
         animatorLevelText   = levelText.gameObject.GetComponent<Animator>(); // Cashing Animator
         clips               = animatorLevelText.runtimeAnimatorController.animationClips;
-    }
 
-    // ### CODE STARTS
-    void OnEnable()
-    {
+        // bool startGame  = false;
+        playerName      = PlayerPrefs.GetString("PlayerName", "").ToString();
+
+        // RESTART
+        // if (PlayerPrefs.GetInt("PlayerID", 0) != 0) {
+        
+        while (string.IsNullOrEmpty(playerName))
+        {
+            WelcomeScreen.SetActive(true);
+        }
+        
+        // Activates Game Objects
+        PlayerObj.gameObject.SetActive(true);
+        ScoreUI.SetActive(true);
+        PlayerHud.gameObject.SetActive(true);
+
+        // AUDIO
         if (PlayerPrefs.GetInt("MuteMusicToogle", 0) == 0)
         {
             audioListTHEMES.Clear(); // Clear everytime enable that GameObj the game
 
             // Firts Songs
-            audioListTHEMES.Add(1 , "[TK] Theme on Game");
-            audioListTHEMES.Add(2 , "[TK] Monkey Warhol");           
-            
+            audioListTHEMES.Add(1, "[TK] Theme on Game");
+            audioListTHEMES.Add(2, "[TK] Monkey Warhol");
+
             int sortThemeSong = Random.Range(1, 3);
             initialThemeOnGame = audioListTHEMES[sortThemeSong].ToString();
-            
-            if (audioListTHEMES.Contains(sortThemeSong)) {
-                FindObjectOfType<AudioManager>().FadeAudio(initialThemeOnGame, 1f, true); // Fade In
-            }
+
+            if (audioListTHEMES.Contains(sortThemeSong))
+                FindObjectOfType<AudioManager>().FadeAudio(initialThemeOnGame, 1f, true);
         }
 
+        audioListSFX.Clear(); // Clear to use again
+
+        // Level 1 - Play After Born
+        audioListSFX.Add(1, "[FX] YehawScream");
+        audioListSFX.Add(2, "[FX] Eazy");
+        audioListSFX.Add(3, "[FX] BadFelling");
+    }
+
+    void OnEnable()
+    {
         gameOver                = false;
         gameOverScreenShowed    = false;
         levelOneisRunning       = false;
@@ -115,30 +160,27 @@ public class GameManager : MonoBehaviour
         levelFourisRunning      = false;
         
         // Por Default - Level 01
-        maxKillerToSpawn = 1    ;
+        maxStonesToSpawn = 1    ;
         maxDrag = 4             ;
 
-        StartCoroutine(SpawnKillers());
-        StartCoroutine(HighestScoreValue()); 
+        // UI Score Data
+        personalBestTMP         = GetPlayerHighestScore(playerName);
+        personalBestText.text   = personalBestTMP.ToString();
 
-        audioListSFX.Clear(); // Clear to use again
+        highestScoreTMP         = GetAllTimeHighestScore();
+        highestScoreText.text   = highestScoreTMP.ToString();        
 
-        // Level 1 - Play After Born
-        audioListSFX.Add(1 , "[FX] YehawScream");
-        audioListSFX.Add(2 , "[FX] Eazy");
-        audioListSFX.Add(3 , "[FX] BadFelling");
+        StartCoroutine(InstantiateStone());
     }
 
-    private void Update() {
+    void Update() {
         if (gameOver) {              
             if (!gameOverScreenShowed) {
-                GameOverManage(); // Método de Ativação da SCREEN GAMEOVER            
+                GameOverManager(); // Método de Ativação da SCREEN GAMEOVER            
             }
             return;
         }
-
-        // DeltaTime é o tempo que levou para entrar em outro FRAME (Se o jogo está em 60 FPS, DeltaTime = 1/60)
-        // É uma maneira de calcular tempo independente da performance do nosso computador
+        
         if (!comboHit) {   // Animação HitStone, não conta Score
             timer += Time.deltaTime;
             if (timer >= 1f){
@@ -151,30 +193,39 @@ public class GameManager : MonoBehaviour
                 timer = 0;
 
                 // Highest Score
-                if (score > highestScoreTMP && isConnectedServer) {
-                    highestScoreText.text = score.ToString();
-                }
+                if (score > highestScoreTMP)
+                    highestScoreText.text = score.ToString();                
 
                 // Personal Best
-                if (score > personalBestTMP && isConnectedServer) {
-                    personalBestText.text = score.ToString();
-                }
+                if (score > personalBestTMP)
+                    personalBestText.text = score.ToString();                
             }            
         }        
     }
 
-    private void GameOverManage() {
-        GameOverScreen.Setup(score, PlayerPrefs.GetString("PlayerName"));                
-        gameOverScreenShowed    = true;
+    public static void GameOver() // Called by Player.cs when player dies
+    { 
+        gameOver = true;
+    }
 
+    void GameOverManager() 
+    {
+        bool newPersonalBest;
+
+        gameOverScreenShowed = true;
         levelText.transform.gameObject.SetActive(false);
         PlayerHud.gameObject.SetActive(false);
-        FindObjectOfType<AudioManager>().Play("[FX] WoodenCrateDestruction"); //  Wooden Box Smashed
+                
+        FindObjectOfType<AudioManager>().Play("[FX] WoodenCrateDestruction"); //  Wooden Box Smashed        
 
-        // Sound Design
-        if (personalBestTMP < score) {
+        // AUDIO
+        if (score > personalBestTMP) { // New Personal Best
+            newPersonalBest = true;
+
             FindObjectOfType<AudioManager>().Play("[FX] WowVoice");
-        } else {
+        } 
+        else {
+            newPersonalBest = false;
             int sortBornFX;
             if (levelOneisRunning){                    
                 // Level 1 - Play After Die
@@ -184,7 +235,8 @@ public class GameManager : MonoBehaviour
                 
                 sortBornFX = Random.Range(10, 13); // 10 a 12 - Sort para Audio Death
                 FindObjectOfType<AudioManager>().Play(audioListSFX[sortBornFX].ToString()); 
-            } else if(levelTwoisRunning ^ levelThreeisRunning) {
+            } 
+            else if(levelTwoisRunning ^ levelThreeisRunning) {
                 // Level 2/3 - Play After Die
                 audioListSFX.Add(20 , "[TK] SadPiano");
                 audioListSFX.Add(21 , "[FX] DoitJustDo");
@@ -200,7 +252,8 @@ public class GameManager : MonoBehaviour
                 }
 
                 FindObjectOfType<AudioManager>().Play(audioListSFX[sortBornFX].ToString());
-            } else if (levelFinalisRunning ^ levelFourisRunning) {
+            } 
+            else if (levelFinalisRunning ^ levelFourisRunning) {
                 // Level 4 - Play After Die
                 audioListSFX.Add(30 , "[FX] WowVoice");
                 audioListSFX.Add(31 , "[FX] Claps");
@@ -211,7 +264,9 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        // Clear Bool variables
+        GameOverScreen.Setup(score, newPersonalBest, PlayerPrefs.GetString("PlayerName"));
+
+        // Clear Level State
         levelOneisRunning       = false;
         levelTwoisRunning       = false;
         levelThreeisRunning     = false;
@@ -219,81 +274,22 @@ public class GameManager : MonoBehaviour
         levelFinalisRunning     = false;
     }        
 
-    private IEnumerator HighestScoreValue(){
-
-        string typeSeek = PlayerPrefs.GetString("PlayerName", "");       
-
-        // Call IEnumerator "GetHishScore" from "HighScoreRegistration" Script
-        FindObjectOfType<HighScoreRegistration>().CallGetHighScore(typeSeek);
-
-        // Way I found to wait for response from the Server (it will cancel the request after 2 seconds)
-        int y = 1;
-        while(jsonReceivedData == null)
-        {
-            LoadingIcon.gameObject.SetActive(true);
-            LoadingIconTwo.gameObject.SetActive(true);
-            yield return new WaitForSeconds(1f);
-            y++;
-            if (y > 15){
-                isConnectedServer = false; // Confiramando inexistência de Conexão
-                // Debug.Log("Cancelando Requisição - #GameManager.cs - HighestScoreValue()");
-                // ######### PARAR O JOGO E INFORMAR USUÁRIO DO PROBLEMA ENCONTRADO
-                LoadingIcon.gameObject.SetActive(false);
-                LoadingIconTwo.gameObject.SetActive(false);
-
-                NetWorkErroImg.SetActive(true);
-                NetWorkErroImgTwo.SetActive(true);                                
-                break;
-            }
-        }
-        
-        if (jsonReceivedData != null){
-            isConnectedServer = true;
-
-            // CAPTURA VALORES DO JSON
-            highestScoreTMP = jsonReceivedData[0].GetField("score") == null ? 0 : int.Parse(jsonReceivedData[0].GetField("score").ToString().Trim('"'));           
-
-            // CASO SO PLAYER ATUAL SEJA TAMBÉM O TOP 1
-            if (PlayerPrefs.GetString("PlayerName", "") == jsonReceivedData[0].GetField("playername").ToString().Trim('"'))
-            {
-                personalBestTMP     = highestScoreTMP;
-                idTMP               = jsonReceivedData[0] == null ? 0 : int.Parse(jsonReceivedData[0].GetField("id").ToString().Trim('"'));
-            } 
-            else 
-            {
-                personalBestTMP     = jsonReceivedData[1] == null ? 0 : int.Parse(jsonReceivedData[1].GetField("score").ToString().Trim('"'));
-                idTMP               = jsonReceivedData[1] == null ? 0 : int.Parse(jsonReceivedData[1].GetField("id").ToString().Trim('"'));
-            }
-
-            // Preenche UI Values
-            highestScoreText.text = highestScoreTMP.ToString();
-            personalBestText.text = personalBestTMP.ToString();
-
-            // Grava temporariamente o SCORE e ID do player (SERÃO USADOS EM GAMEOVERSCREE.CS - SETUP())
-            if (PlayerPrefs.GetInt("PlayerID", 0) != 0) {
-                PlayerPrefs.DeleteKey("PlayerID");
-            }
-            PlayerPrefs.SetInt("PlayerID", idTMP);
-
-
-            if (PlayerPrefs.GetInt("PlayerPersonalBest", 0) != 0) 
-            {
-                PlayerPrefs.DeleteKey("PlayerPersonalBest");
-            }
-            PlayerPrefs.SetInt("PlayerPersonalBest", personalBestTMP);
-
-            // Atualiza UI
-            LoadingIcon.gameObject.SetActive(false);
-            LoadingIconTwo.gameObject.SetActive(false);
-        }
-        // "Destrói" Objeto        
-        jsonReceivedData = null;
+    private int GetPlayerHighestScore(string playerName)
+    {
+        int score = PlayerPrefs.GetInt("PlayerPersonalBest", 0);
+        return score;
     }
 
-    private IEnumerator SpawnKillers(){
+    private int GetAllTimeHighestScore()
+    {
+        int score = PlayerPrefs.GetInt("PlayerPersonalBest", 0);
+        return score;
+    }
+
+    private IEnumerator InstantiateStone(){
         // Pós GameOver
         if (gameOverScreenShowed){
-            maxKillerToSpawn = 3;
+            maxStonesToSpawn = 3;
             maxDrag = 3;
         } else {            
             if (score < levelOneEnds && !levelOneisRunning)                                         // LEVEL 01
@@ -323,7 +319,7 @@ public class GameManager : MonoBehaviour
             }            
         }
        
-        var killerToSpawn = Random.Range(1, maxKillerToSpawn + 1);
+        var killerToSpawn = Random.Range(1, maxStonesToSpawn + 1);
         
         int[] intArrayX = new int[killerToSpawn];
 
@@ -350,7 +346,7 @@ public class GameManager : MonoBehaviour
             intArrayX[i] = eixoX;
             
             // Instancia o Objeto (Retorna um GamboObject)
-            var killer = Instantiate(killerRock, new Vector3(eixoX, 10, -5), Quaternion.identity);
+            var killer = Instantiate(StonePrefab, new Vector3(eixoX, 10, -5), Quaternion.identity);
 
             if (gameOverScreenShowed) {
                 killer.GetComponent<Rigidbody>().drag = maxDrag;
@@ -384,7 +380,7 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(1f);        
 
-        yield return SpawnKillers();
+        yield return InstantiateStone();
     }
 
     private IEnumerator LevelManager(int levelNumber){        
@@ -400,7 +396,7 @@ public class GameManager : MonoBehaviour
             // LEVEL 01
             case 1:
                 levelOneisRunning   = true      ;            
-                maxKillerToSpawn    = 1         ;
+                maxStonesToSpawn    = 1         ;
                 maxDrag             = 3         ;
                 levelText.text      = "LEVEL 1" ;                                
                 
@@ -411,12 +407,12 @@ public class GameManager : MonoBehaviour
                 FindObjectOfType<AudioManager>().Play("[FX] WindSound")      ;
                 FindObjectOfType<AudioManager>().Play("[FX] WaterSound")     ;           
                 
-                // Debug.Log("LEVEL 01: MaxDrag = " + maxDrag + " / MaxKillerToSpwn = " + maxKillerToSpawn + " - #GameManager.cs - Update()");    
+                // Debug.Log("LEVEL 01: MaxDrag = " + maxDrag + " / MaxKillerToSpwn = " + maxStonesToSpawn + " - #GameManager.cs - Update()");    
                 break;
             case 2: // LEVEL 02
                 levelOneisRunning   = false     ;
                 levelTwoisRunning   = true      ;
-                maxKillerToSpawn    = 2         ;
+                maxStonesToSpawn    = 2         ;
                 maxDrag             = 3         ;
                 levelText.text      = "LEVEL 2" ;
 
@@ -427,12 +423,12 @@ public class GameManager : MonoBehaviour
                 ColorUtility.TryParseHtmlString("#F8AB79", out colorLevelTwo);
                 DirLightComponent.color = colorLevelTwo;            
 
-                // Debug.Log("LEVEL 02: MaxDrag = " + maxDrag + " / MaxKillerToSpwn = " + maxKillerToSpawn + " - #GameManager.cs - Update()"); 
+                // Debug.Log("LEVEL 02: MaxDrag = " + maxDrag + " / MaxKillerToSpwn = " + maxStonesToSpawn + " - #GameManager.cs - Update()"); 
                 break;
             case 3: // LEVEL 03
                 levelTwoisRunning   = false     ;
                 levelThreeisRunning = true      ;
-                maxKillerToSpawn    = 2         ;
+                maxStonesToSpawn    = 2         ;
                 maxDrag             = 2         ;
                 levelText.text      = "LEVEL 3" ;
 
@@ -455,7 +451,7 @@ public class GameManager : MonoBehaviour
                 RenderSettings.fogColor         = colorAmbient;
                 RenderSettings.ambientSkyColor  = colorAmbient;
 
-                playerCrate.GetComponent<Renderer>().material = redBloom; // Player Bloom
+                PlayerObj.GetComponent<Renderer>().material = redBloom; // Player Bloom
 
                 DirLightComponent.intensity = 0;
                 DirLightComponent.color = colorDirectionalLight;
@@ -467,12 +463,12 @@ public class GameManager : MonoBehaviour
                     SpotLights[i].gameObject.SetActive(true);
                 }
 
-                // Debug.Log("LEVEL 03: MaxDrag = " + maxDrag + " / MaxKillerToSpwn = " + maxKillerToSpawn + " - #GameManager.cs - Update()");                    
+                // Debug.Log("LEVEL 03: MaxDrag = " + maxDrag + " / MaxKillerToSpwn = " + maxStonesToSpawn + " - #GameManager.cs - Update()");                    
                 break;
             case 4: // LEVEL 04
                 levelThreeisRunning     = false     ;
                 levelFourisRunning      = true      ;                
-                maxKillerToSpawn        = 3         ;
+                maxStonesToSpawn        = 3         ;
                 maxDrag                 = 2         ;
                 levelText.text          = "LEVEL 4" ;
 
@@ -486,18 +482,18 @@ public class GameManager : MonoBehaviour
                 RenderSettings.fogColor         = colorAmbient;     // FogColoer
                 RenderSettings.ambientSkyColor  = colorAmbient;     // AmbientColor
 
-                playerCrate.GetComponent<Renderer>().material = greenBloom; // Player Bloom
+                PlayerObj.GetComponent<Renderer>().material = greenBloom; // Player Bloom
 
                 // DIRECTIONAL LIGHT
                 DirLightComponent.intensity = .1f;
                 DirLightComponent.color = colorDirectionalLight;            
 
-                // Debug.Log("LEVEL 04: MaxDrag = " + maxDrag + " / MaxKillerToSpwn = " + maxKillerToSpawn + " - #GameManager.cs - Update()");    
+                // Debug.Log("LEVEL 04: MaxDrag = " + maxDrag + " / MaxKillerToSpwn = " + maxStonesToSpawn + " - #GameManager.cs - Update()");    
                 break;
             case 5: // LEVEL 05                
                 levelFourisRunning  = false         ;
                 levelFinalisRunning = true          ;
-                maxKillerToSpawn    = 3             ;
+                maxStonesToSpawn    = 3             ;
                 maxDrag             = 2             ;
                 levelText.text      = "FINAL LEVEL" ;
 
@@ -513,14 +509,14 @@ public class GameManager : MonoBehaviour
                 DirectionalLight.gameObject.SetActive(false);
                 
                 MoonObject.gameObject.SetActive(true);  // Moon
-                playerCrate.GetComponent<Renderer>().material = iceBlueBloom; // Player Bloom
+                PlayerObj.GetComponent<Renderer>().material = iceBlueBloom; // Player Bloom
                 
                 // Disable all SpotLight Lights (AllDark)
                 for (int i = 0; i < SpotLights.Count; i++) {
                     SpotLights[i].gameObject.SetActive(false);
                 }
 
-                // Debug.Log("LEVEL 05: MaxDrag = " + maxDrag + " / MaxKillerToSpwn = " + maxKillerToSpawn + " - #GameManager.cs - Update()");                 
+                // Debug.Log("LEVEL 05: MaxDrag = " + maxDrag + " / MaxKillerToSpwn = " + maxStonesToSpawn + " - #GameManager.cs - Update()");                 
                 break;
             default:
                 Debug.LogError("Nenhum parâmetro passado como LEVEL. IEnumerator 'LevelManager' - GameManager.cs");
@@ -539,10 +535,6 @@ public class GameManager : MonoBehaviour
         levelText.transform.gameObject.SetActive(true)  ;
         yield return new WaitForSeconds(waitTime)       ;
         levelText.transform.gameObject.SetActive(false) ;        
-    }
-
-    public static void GameOver(){
-        gameOver = true;
     }
 
     public void DestroyedStone(Transform transoformRock){ // Called from Killer.cs script

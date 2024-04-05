@@ -14,28 +14,15 @@ using UnityEngine.EventSystems;
 
     Atualizações: 
         15/07/2021: adição da tratativa que define se os dados utilizados serão locais ou via WEBRequest.
+        05/04/2024: start with the adaptation to play offline
 
     Descrição:  
         Classe que possui métodos e objetos que são utilizados localmente e em outros scripts.
         Video Aula: https://youtu.be/iAbaqGYdnyI
 
-    Variáveis:    
-        private Transform entryContainer;
-        
-        private Transform entryTemplate;
-        
-        private List<HighscoreEntry> highscoreEntryListNew;
-
-        private List<Transform> highscoreEntryTransformList;
-        
-        public GameOverScreen GameOverScreen;
     Métodos:
-        Awake(): Ao "acordar" o gameObject ao qual esse script está atrelado, ele irá fazer uma série de tratativas para consultar o RANK 
-                na tabela "highscoresTable" no PlayerPrefs. Ao fim chama o método CreateHighscoreEntryTransform para cada linha encontrada.
-        
-        CreateHighscoreEntryTransform():
-
-    Classes:
+        Awake(): irá fazer uma série de tratativas para consultar o RANK na tabela "highscoresTable" no PlayerPrefs. Ao fim chama o método CreateHighscoreEntryTransform para cada linha encontrada.
+        CreateHighscoreEntryTransform()    
 
 ###*/
 
@@ -51,14 +38,14 @@ public class HighScoreTable : MonoBehaviour
     public GameOverScreen GameOverScreen;
     public GameObject LoadingIcon, highScoreFirstButton;
 
-    private static JSONObject jsonScores;
+    // private static JSONObject jsonScores;
 
     // Receive this Value from IEnumerator "GetHighScore" from HighScoreRegistration script. It's used ahead in the code (ONLY WEB REQUEST)
-    public static void receiveDataAll(JSONObject jsonScoresParameter){
+    /*public static void receiveDataAll(JSONObject jsonScoresParameter){
         jsonScores = jsonScoresParameter;   
-    }
+    }*/
 
-    private void OnEnable() 
+    /*private void OnEnable() 
     {
         //clear selected object
         EventSystem.current.SetSelectedGameObject(null);
@@ -67,9 +54,9 @@ public class HighScoreTable : MonoBehaviour
 
         LoadingIcon.gameObject.SetActive(true);
         StartCoroutine(ProcessData());        
-    }
+    }*/
 
-    IEnumerator ProcessData(){
+    /*IEnumerator ProcessData(){
         entryContainer = transform.Find("highscoreEnterContainer");
         entryTemplate = entryContainer.Find("highscoreEntryTemplate");
 
@@ -80,7 +67,7 @@ public class HighScoreTable : MonoBehaviour
         
         // Call IEnumerator "GetHishScore" from "HighScoreRegistration" Script        
         string typeSeek = "allData";        // NO FILTERS ON BACK-END
-        FindObjectOfType<HighScoreRegistration>().CallGetHighScore(typeSeek);
+        FindObjectOfType<ScoreBoard>().GetHighScore(typeSeek);
         
         // Way I found to wait for response from the Server (it will cancel the request after 2 seconds)
         int y = 1;
@@ -152,7 +139,7 @@ public class HighScoreTable : MonoBehaviour
 
             // // Debug.Log(PlayerPrefs.GetString("highscoreTable"));
         }       
-    }
+    }*/
 
     private void CreateHighscoreEntryTransform(HighscoreEntry highscoreEntry, Transform container, List<Transform> transformList) {
         float templateHeight = 25f;

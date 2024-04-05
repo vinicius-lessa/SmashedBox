@@ -24,7 +24,7 @@ using UnityEngine.EventSystems;
 public class PauseMenu : MonoBehaviour
 {    
     PlayerControls controls;
-    public InitialWelcome InitialWelcome;
+    public WelcomeScreen InitialWelcome;
     public static bool GameIsPause = false;
     public GameObject pauseMenuUI;
     public GameManager GameManager;
@@ -128,7 +128,7 @@ public class PauseMenu : MonoBehaviour
     }
 
     // Call Menu Scene
-    public void LoadMenu ()
+    public void LoadMenu()
     {        
         FindObjectOfType<AudioManager>().Play("[FX] PauseAtivationSound");
         
@@ -136,8 +136,8 @@ public class PauseMenu : MonoBehaviour
 
         // Limpa PlayerPrefs
         // PlayerPrefs.DeleteKey("PlayerName");
-        PlayerPrefs.DeleteKey("PlayerID");
-        PlayerPrefs.DeleteKey("PlayerPersonalBest");
+        // PlayerPrefs.DeleteKey("PlayerID");
+        // PlayerPrefs.DeleteKey("PlayerPersonalBest");
         
         Time.timeScale = 1f;
 
@@ -147,7 +147,7 @@ public class PauseMenu : MonoBehaviour
     } 
 
     // Quit the Game
-    public void Quit ()
+    public void Quit()
     {
         FindObjectOfType<AudioManager>().Play("[FX] SelectionConfirm");
         FindObjectOfType<AudioManager>().Play("[FX] PauseAtivationSound");
@@ -157,9 +157,9 @@ public class PauseMenu : MonoBehaviour
         // Limpa PlayerName
         // PlayerPrefs.DeleteKey("PlayerName"); // Será carregado opcionalmente no Input do "InitialWelcome"
         
-        PlayerPrefs.DeleteKey("PlayerID");
-        PlayerPrefs.DeleteKey("PlayerPersonalBest");
-        PlayerPrefs.DeleteKey("InternetConnection");
+        // PlayerPrefs.DeleteKey("PlayerID");
+        // PlayerPrefs.DeleteKey("PlayerPersonalBest");
+        // PlayerPrefs.DeleteKey("InternetConnection");
         
         // PlayerPrefs.DeleteAll();
 
