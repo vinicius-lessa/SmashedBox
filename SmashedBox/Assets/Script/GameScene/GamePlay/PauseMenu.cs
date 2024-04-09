@@ -34,8 +34,6 @@ public class PauseMenu : MonoBehaviour
     EventSystem m_EventSystem;
     
     private bool isFirstSelected = false;
-    
-
     void Awake() {
         m_EventSystem = EventSystem.current;
         controls = new PlayerControls();
@@ -132,17 +130,14 @@ public class PauseMenu : MonoBehaviour
     {        
         FindObjectOfType<AudioManager>().Play("[FX] PauseAtivationSound");
         
-        GameIsPause = false; 
+        GameIsPause = false;
 
         // Limpa PlayerPrefs
-        // PlayerPrefs.DeleteKey("PlayerName");
-        // PlayerPrefs.DeleteKey("PlayerID");
-        // PlayerPrefs.DeleteKey("PlayerPersonalBest");
-        
-        Time.timeScale = 1f;
+        PlayerPrefs.DeleteKey("PlayerName");
+        PlayerPrefs.DeleteKey("PlayerPersonalBest");
 
-        GameManager.score = 0;
-        
+        Time.timeScale = 1f;
+        GameManager.score = 0;        
         SceneManager.LoadScene(0);
     } 
 
@@ -153,17 +148,12 @@ public class PauseMenu : MonoBehaviour
         FindObjectOfType<AudioManager>().Play("[FX] PauseAtivationSound");
         
         GameIsPause = false;
-        
-        // Limpa PlayerName
-        // PlayerPrefs.DeleteKey("PlayerName"); // Será carregado opcionalmente no Input do "InitialWelcome"
-        
-        // PlayerPrefs.DeleteKey("PlayerID");
-        // PlayerPrefs.DeleteKey("PlayerPersonalBest");
-        // PlayerPrefs.DeleteKey("InternetConnection");
-        
-        // PlayerPrefs.DeleteAll();
 
-        // Debug.Log("Quitting Game");
+        // Limpa PlayerName
+        PlayerPrefs.DeleteKey("PlayerName");
+        PlayerPrefs.DeleteKey("PlayerPersonalBest");
+        // PlayerPrefs.DeleteAll();
+        
         Application.Quit();
     } 
 }

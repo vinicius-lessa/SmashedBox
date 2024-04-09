@@ -27,13 +27,14 @@ CHECK / DELETE
     idTMP
     isConnectedServer
     ParsePlayerScore
+    InternetConnection
+    PlayerID
 */
 
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using TMPro;
-using UnityEngine.SocialPlatforms.Impl;
 
 public class GameManager : MonoBehaviour
 {
@@ -88,22 +89,19 @@ public class GameManager : MonoBehaviour
     private static bool gameOver;   
     public static bool gameOverScreenShowed, levelOneisRunning, levelTwoisRunning, levelThreeisRunning, levelFourisRunning, levelFinalisRunning;    
 
-    // Hit Rock Stone
+    // Stone Destruction
     public GameObject hitTextOne, hitTextTwo;
     private static bool comboHit = false;
 
-    /*
-    // Called by "HighScoreRegistration" and recieves DataBase data (Score)
-    public static void ParsePlayerScore(JSONObject jsonData){
-        JSONObject jsonReceivedData;
-        jsonReceivedData = jsonData; // Highest Score + Personal Score (2 lines, if it is the same, 1 line)
-    }
-    */
+    private GameManager instance;
 
-    void Start() 
+    private void Awake()
     {
-        PlayerPrefs.DeleteAll();
+        instance = this;
+    }
 
+    void OnEnable() 
+    {
         score = 0;
 
         // LevelText Animator
@@ -111,66 +109,50 @@ public class GameManager : MonoBehaviour
         clips               = animatorLevelText.runtimeAnimatorController.animationClips;
 
         // bool startGame  = false;
-        playerName      = PlayerPrefs.GetString("PlayerName", "").ToString();
+        playerName = PlayerPrefs.GetString("PlayerName", "").ToString();
 
-        // RESTART
-        // if (PlayerPrefs.GetInt("PlayerID", 0) != 0) {
-        
-        while (string.IsNullOrEmpty(playerName))
-        {
-            WelcomeScreen.SetActive(true);
+        // Check if There's a Player Logged
+        if (string.IsNullOrEmpty(playerName)) {
+            WelcomeScreenCall();
+        } 
+        else {
+            StartGame();
         }
-        
-        // Activates Game Objects
+    }
+
+    private void WelcomeScreenCall()
+    {
+        WelcomeScreen.SetActive(true);
+        instance.gameObject.SetActive(false);
+    }
+
+    public void StartGame()
+    {
+        // Activates Essential Objects
         PlayerObj.gameObject.SetActive(true);
         ScoreUI.SetActive(true);
         PlayerHud.gameObject.SetActive(true);
 
-        // AUDIO
-        if (PlayerPrefs.GetInt("MuteMusicToogle", 0) == 0)
-        {
-            audioListTHEMES.Clear(); // Clear everytime enable that GameObj the game
-
-            // Firts Songs
-            audioListTHEMES.Add(1, "[TK] Theme on Game");
-            audioListTHEMES.Add(2, "[TK] Monkey Warhol");
-
-            int sortThemeSong = Random.Range(1, 3);
-            initialThemeOnGame = audioListTHEMES[sortThemeSong].ToString();
-
-            if (audioListTHEMES.Contains(sortThemeSong))
-                FindObjectOfType<AudioManager>().FadeAudio(initialThemeOnGame, 1f, true);
-        }
-
-        audioListSFX.Clear(); // Clear to use again
-
-        // Level 1 - Play After Born
-        audioListSFX.Add(1, "[FX] YehawScream");
-        audioListSFX.Add(2, "[FX] Eazy");
-        audioListSFX.Add(3, "[FX] BadFelling");
-    }
-
-    void OnEnable()
-    {
+        // Initializes Gameplay bool Variables
         gameOver                = false;
         gameOverScreenShowed    = false;
         levelOneisRunning       = false;
         levelTwoisRunning       = false;
         levelThreeisRunning     = false;
         levelFourisRunning      = false;
-        
-        // Por Default - Level 01
-        maxStonesToSpawn = 1    ;
-        maxDrag = 4             ;
+
+        // Level 01
+        maxStonesToSpawn = 1;
+        maxDrag = 4;
 
         // UI Score Data
-        personalBestTMP         = GetPlayerHighestScore(playerName);
-        personalBestText.text   = personalBestTMP.ToString();
+        personalBestTMP = GetPlayerHighestScore(playerName);
+        personalBestText.text = personalBestTMP.ToString();
 
-        highestScoreTMP         = GetAllTimeHighestScore();
-        highestScoreText.text   = highestScoreTMP.ToString();        
+        highestScoreTMP = GetAllTimeHighestScore();
+        highestScoreText.text = highestScoreTMP.ToString();
 
-        StartCoroutine(InstantiateStone());
+        StartCoroutine(InstantiateStone());        
     }
 
     void Update() {
@@ -270,7 +252,7 @@ public class GameManager : MonoBehaviour
         levelOneisRunning       = false;
         levelTwoisRunning       = false;
         levelThreeisRunning     = false;
-        levelFourisRunning      = false;        
+        levelFourisRunning      = false;
         levelFinalisRunning     = false;
     }        
 
@@ -288,10 +270,13 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator InstantiateStone(){
         // Pós GameOver
-        if (gameOverScreenShowed){
+        if (gameOverScreenShowed)
+        {
             maxStonesToSpawn = 3;
             maxDrag = 3;
-        } else {            
+        } 
+        else 
+        {
             if (score < levelOneEnds && !levelOneisRunning)                                         // LEVEL 01
             {
                 StartCoroutine(LevelManager(1));
@@ -389,7 +374,7 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.01f);
         FindObjectOfType<AudioManager>().Play("[FX] DrumsLevel");
-        FindObjectOfType<AudioManager>().Play("[FX] LevelCut");
+        FindObjectOfType<AudioManager>().Play("[FX] LevelCut");        
 
         switch (levelNumber)
         {
@@ -398,16 +383,39 @@ public class GameManager : MonoBehaviour
                 levelOneisRunning   = true      ;            
                 maxStonesToSpawn    = 1         ;
                 maxDrag             = 3         ;
-                levelText.text      = "LEVEL 1" ;                                
-                
-                sortBornFX = Random.Range(1, 4); // 1 a 3 - Sort initial SFX
-                FindObjectOfType<AudioManager>().Play(audioListSFX[sortBornFX].ToString())     ; 
+                levelText.text      = "LEVEL 1" ;
 
-                FindObjectOfType<AudioManager>().Play("[FX] BirdsSinging")   ;
-                FindObjectOfType<AudioManager>().Play("[FX] WindSound")      ;
-                FindObjectOfType<AudioManager>().Play("[FX] WaterSound")     ;           
+                audioListSFX.Clear(); // Clear to use again
+
+                // Level 1 - Play After Born
+                audioListSFX.Add(1, "[FX] YehawScream");
+                audioListSFX.Add(2, "[FX] Eazy");
+                audioListSFX.Add(3, "[FX] BadFelling");
+
+                sortBornFX = Random.Range(1, 4); // 1 a 3 - Sort initial SFX
+                FindObjectOfType<AudioManager>().Play(audioListSFX[sortBornFX].ToString());
+
+                // AUDIO
+                if (PlayerPrefs.GetInt("MuteMusicToogle", 0) == 0)
+                {
+                    audioListTHEMES.Clear(); // Clear everytime enable that GameObj the game
+
+                    // Firts Songs
+                    audioListTHEMES.Add(1, "[TK] Theme on Game");
+                    audioListTHEMES.Add(2, "[TK] Monkey Warhol");
+
+                    int sortThemeSong = Random.Range(1, 3);
+                    initialThemeOnGame = audioListTHEMES[sortThemeSong].ToString();
+
+                    if (audioListTHEMES.Contains(sortThemeSong))
+                        FindObjectOfType<AudioManager>().FadeAudio(initialThemeOnGame, 1f, true);
+                }
+
+                FindObjectOfType<AudioManager>().Play("[FX] BirdsSinging");
+                FindObjectOfType<AudioManager>().Play("[FX] WindSound");
+                FindObjectOfType<AudioManager>().Play("[FX] WaterSound");
                 
-                // Debug.Log("LEVEL 01: MaxDrag = " + maxDrag + " / MaxKillerToSpwn = " + maxStonesToSpawn + " - #GameManager.cs - Update()");    
+                // Debug.Log("LEVEL 01: MaxDrag = " + maxDrag + " / MaxKillerToSpwn = " + maxStonesToSpawn + " - #GameManager.cs - Update()");
                 break;
             case 2: // LEVEL 02
                 levelOneisRunning   = false     ;
@@ -416,9 +424,7 @@ public class GameManager : MonoBehaviour
                 maxDrag             = 3         ;
                 levelText.text      = "LEVEL 2" ;
 
-                // Change SKYBOX and DIRECTIONAL LIGHT
-                RenderSettings.skybox = materialNight;
-                // RenderSettings.fog = false;
+                RenderSettings.skybox = materialNight; // Change SKYBOX and DIRECTIONAL LIGHT
 
                 ColorUtility.TryParseHtmlString("#F8AB79", out colorLevelTwo);
                 DirLightComponent.color = colorLevelTwo;            

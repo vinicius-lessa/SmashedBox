@@ -21,15 +21,13 @@ using System.Collections;
 */
 
 public class MenuManager : MonoBehaviour
-{    
-    // Public GameObjects
-    public GameObject menuPanel;
-    // public GameObject connectionTestPanel;    
-    
-    // Called when certain Button is clicked
-    public GameObject optionsPanel;
+{
+    public GameObject menuPanel;    
+        
+    public GameObject optionsPanel; // Called when certain Button is clicked
 
-    private void Start() {
+    private void Start()
+    {
         AudioListener.volume = PlayerPrefs.GetFloat("VolumeSlider", 1);
 
         // Verifies MuteMusic Toogle in OptionsMenu.cs
@@ -38,15 +36,10 @@ public class MenuManager : MonoBehaviour
     }    
 
     private void OnEnable() {
-        FindObjectOfType<CrossFade>().CrossFadeIn(1f);     
-
-        //if(PlayerPrefs.GetInt("InternetConnection", 3) == 1) // Connection has already been validated
-            menuPanel.SetActive(true);
-        // else
-            // connectionTestPanel.SetActive(true);
+        FindObjectOfType<CrossFade>().CrossFadeIn(1f);
+        menuPanel.SetActive(true);
     }
-
-    // BUTTONS METHEDOS
+    
     public void PlayGameButton()
     {
         FindObjectOfType<AudioManager>().Play("[FX] SelectionConfirm");        

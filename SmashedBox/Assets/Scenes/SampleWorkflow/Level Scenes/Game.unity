@@ -2474,20 +2474,20 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 164117540}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.0000038695}
-  m_LocalScale: {x: 1.0903109, y: 1.0903109, z: 1.0903109}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 780207044}
   - {fileID: 317818839}
   m_Father: {fileID: 776467688}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -528.7, y: -319.35}
-  m_SizeDelta: {x: 181.6696, y: 50.8056}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 15.026855, y: 0}
+  m_SizeDelta: {x: 186.4898, y: 92.0037}
+  m_Pivot: {x: 1.344621, y: -0.4070539}
 --- !u!114 &164117542
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2534,7 +2534,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 776467689}
         m_TargetAssemblyTypeName: GameOverScreen, Assembly-CSharp
-        m_MethodName: WorldRanking
+        m_MethodName: ScoreRanking
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10144,7 +10144,7 @@ MonoBehaviour:
   NetWorkErroImgTwo: {fileID: 531979827}
   LoadingIcon: {fileID: 289216798}
   LoadingIconTwo: {fileID: 1945225057}
-  PlayerHud: {fileID: 1658484723}
+  PlayerHud: {fileID: 458217086}
   ScoreUI: {fileID: 32410292}
   WelcomeScreen: {fileID: 30721160}
   materialDay: {fileID: 2100000, guid: 2bd8959f5fbd3644aa33af1a155fc147, type: 2}
@@ -16654,7 +16654,7 @@ MonoBehaviour:
   gameOverFirstButton: {fileID: 1873209758}
   pointsText: {fileID: 1951422352}
   feedBack: {fileID: 1914270086}
-  HighScoreTable: {fileID: 0}
+  HighScoreTable: {fileID: 1827179291}
 --- !u!114 &776467690
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16781,7 +16781,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: World Ranking
+  m_text: SCORE RANKING
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 99b1bf077b0d9ad47a6f62c237c85b9e, type: 2}
   m_sharedMaterial: {fileID: 8410166888702872720, guid: 99b1bf077b0d9ad47a6f62c237c85b9e, type: 2}
@@ -16808,8 +16808,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 20
-  m_fontSizeBase: 20
+  m_fontSize: 23
+  m_fontSizeBase: 23
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -18905,97 +18905,6 @@ Transform:
   - {fileID: 80874946}
   m_Father: {fileID: 268059242}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &962710633
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 962710634}
-  - component: {fileID: 962710637}
-  - component: {fileID: 962710636}
-  - component: {fileID: 962710635}
-  m_Layer: 5
-  m_Name: Loading_White
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &962710634
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 962710633}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7993287, y: 0.7993287, z: 0.7993287}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1827179290}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.9403, y: -27.286}
-  m_SizeDelta: {x: 128, y: 128}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &962710635
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 962710633}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f0391372b9073644b7462b84b8fa148, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _mainIcon: {fileID: 962710634}
-  _timeStep: 0.05
-  _oneStepAngle: -30
---- !u!114 &962710636
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 962710633}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.28627452, g: 0.36078432, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9f86dd3828185d842ac21d91c60e4b6f, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &962710637
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 962710633}
-  m_CullTransparentMesh: 1
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -20778,7 +20687,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: World Highscore
+  m_text: Score Ranking
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: db8d86f727ca93c44ae0389a65addc49, type: 2}
   m_sharedMaterial: {fileID: -1527963961739137189, guid: db8d86f727ca93c44ae0389a65addc49, type: 2}
@@ -46689,50 +46598,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6218948771537092451, guid: cf0d520099e84f5449fc25d1dcfe4a3a, type: 3}
   m_PrefabInstance: {fileID: 6218948771045204093}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1703009527
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1703009528}
-  - component: {fileID: 1703009529}
-  m_Layer: 0
-  m_Name: HighScoreRegistration
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1703009528
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1703009527}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1703009529
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1703009527}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63972193a14cb15458ae5c1f751a7562, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1727450832
 GameObject:
   m_ObjectHideFlags: 0
@@ -48373,7 +48238,6 @@ RectTransform:
   - {fileID: 1436925941}
   - {fileID: 593909415}
   - {fileID: 319042466}
-  - {fileID: 962710634}
   - {fileID: 557369993}
   - {fileID: 1592380377}
   m_Father: {fileID: 1897602525}
@@ -48396,7 +48260,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   GameOverScreen: {fileID: 776467689}
-  LoadingIcon: {fileID: 962710633}
   highScoreFirstButton: {fileID: 557369992}
 --- !u!95 &1827179292
 Animator:
@@ -50653,7 +50516,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: VINICIUS
+  m_text: LESSLAX
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: db8d86f727ca93c44ae0389a65addc49, type: 2}
   m_sharedMaterial: {fileID: -1527963961739137189, guid: db8d86f727ca93c44ae0389a65addc49, type: 2}
@@ -96992,7 +96855,6 @@ SceneRoots:
   - {fileID: 705507995}
   - {fileID: 627453131}
   - {fileID: 1531001142}
-  - {fileID: 1703009528}
   - {fileID: 60548286}
   - {fileID: 290655975}
   - {fileID: 1995949770}

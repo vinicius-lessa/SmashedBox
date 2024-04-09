@@ -5,25 +5,21 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 /*
-### - DOC
-
-    Criador(es): VINÍCIUS LESSA (LessLax Studios)
-
-    Data: 19/07/2021
-
-    Descrição:
-        Player é a classe criada para o objeto "jogável" do nosso Game, poderia ter qualquer outro nome
-        Ela herda tudo da classe MonoBehaviour
-
-    Links:
-        Basics: 
-            Controls: https://youtu.be/p-3S73MaDP8
-
-        LeanTween:
-            https://assetstore.unity.com/packages/tools/animation/leantween-3595
-
-        Formatos de Movimento (Boost - setEase...):
-            https://codepen.io/jhnsnc/pen/LpVXGM
+ * @Documentaion
+ * 
+ * DESCRIPTION
+ *      Player é a classe criada para o objeto "jogável" do nosso Game, poderia ter qualquer outro nome.
+ *      Ela herda tudo da classe MonoBehaviour
+ * 
+ * RESOURCES
+ *      Controls: https://youtu.be/p-3S73MaDP8
+ *      LeanTween: https://assetstore.unity.com/packages/tools/animation/leantween-3595
+ *      Formatos de Movimento (Boost - setEase...): https://codepen.io/jhnsnc/pen/LpVXGM
+ *
+ * DATES
+ *      19/07/2021 - Vinícius Lessa (LessLax): Creation of script
+ *      10/03/2024 - Vinícius Lessa (LessLax): Start of changes to disable online scoreboarding and connectivity check
+ *
 */
 
 public class Player : MonoBehaviour
@@ -108,6 +104,82 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody>();                  
     }
 
+    void OnEnable()
+    {
+        controls.Gameplay.Enable();
+    }
+
+    void OnDisable()
+    {
+        controls.Gameplay.Disable();
+    }
+
+    void Update()
+    {
+        var horizontalInput = Input.GetAxis("Horizontal");  // -1 > 1 // Keyboard or Gamepad
+
+        if (rb.velocity.magnitude <= maximumVelocity && !PauseMenu.GameIsPause)
+        { // MOVE                        
+            rb.AddForce(new Vector3(horizontalInput * forceMultiplier, 0, 0));
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) & cubeIsontheGround)
+        {   // JUMP
+            // FootDust
+            float direction = rb.GetPointVelocity(transform.position).x;
+            if (!(direction == 0))
+            {
+                float postitionX = direction < 0 ? gameObject.transform.position.x - distanceDust : gameObject.transform.position.x + distanceDust; // Ajusta posição X
+                float postitionY = gameObject.transform.position.y - .5f; // Ajusta Altura
+                float postionZ = gameObject.transform.position.z; // Default
+
+                Vector3 pos = new Vector3(postitionX, postitionY, postionZ);
+                Vector3 rot = new Vector3(footDust.transform.position.x, direction < 0 ? 90f : -90f, footDust.transform.position.z);
+
+                footDust.transform.SetPositionAndRotation(pos, Quaternion.Euler(rot));
+                footDust.Play();
+            }
+
+            FindObjectOfType<AudioManager>().Play("[FX] Jump");
+            // Vector3.up significa EIXO Y
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            cubeIsontheGround = false;
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {   // BOOST
+            //if (!(horizontalInput == 0) && boostIsAvailible) {
+            if (boostIsAvailible)
+            {
+                applyBoost(horizontalInput);
+                boostIsAvailible = false;
+            }
+        }
+
+        if (!boostIsAvailible)
+        {
+            timer += Time.deltaTime;
+
+            if (timer >= boostReloadTime)
+            {
+                boostIsAvailible = true;
+                timer = 0;
+                // Debug.Log("Boost Disponível!");
+            }
+            else
+            {
+                if (!(timer > 5))
+                    boostSlider.value = timer;
+            }
+        }
+
+        // Reposition the player on the Z Axis
+        if (transform.position.z != -4.90f)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, -4.90f);
+        }
+    }
+
     void JumpPlayer(){
         var horizontalInput = Input.GetAxis("Horizontal");  // -1 > 1
         
@@ -140,70 +212,7 @@ public class Player : MonoBehaviour
             applyBoost(horizontalInput);
             boostIsAvailible = false;
         }
-    }
-
-    void OnEnable() {
-        controls.Gameplay.Enable();
-    }
-
-    void OnDisable() {
-        controls.Gameplay.Disable();
-    }    
-
-    void Update(){
-        var horizontalInput = Input.GetAxis("Horizontal");  // -1 > 1 // Keyboard or Gamepad
-        
-        if (rb.velocity.magnitude <= maximumVelocity && !PauseMenu.GameIsPause){ // MOVE                        
-            rb.AddForce(new Vector3(horizontalInput * forceMultiplier, 0, 0));            
-        }
-        
-        if (Input.GetKeyDown(KeyCode.Space) & cubeIsontheGround){   // JUMP
-            // FootDust
-            float direction = rb.GetPointVelocity(transform.position).x;                
-            if (!(direction == 0)){
-                float postitionX = direction < 0 ? gameObject.transform.position.x - distanceDust : gameObject.transform.position.x + distanceDust; // Ajusta posição X
-                float postitionY = gameObject.transform.position.y - .5f; // Ajusta Altura
-                float postionZ = gameObject.transform.position.z; // Default
-                
-                Vector3 pos = new Vector3(postitionX, postitionY, postionZ);
-                Vector3 rot = new Vector3(footDust.transform.position.x, direction < 0 ? 90f : -90f ,footDust.transform.position.z);
-
-                footDust.transform.SetPositionAndRotation(pos, Quaternion.Euler(rot));
-                footDust.Play();
-            }
-            
-            FindObjectOfType<AudioManager>().Play("[FX] Jump");
-            // Vector3.up significa EIXO Y
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            cubeIsontheGround = false;
-        }
-
-        if (Input.GetMouseButtonDown(1)){   // BOOST
-            //if (!(horizontalInput == 0) && boostIsAvailible) {
-            if (boostIsAvailible) {
-                applyBoost(horizontalInput);
-                boostIsAvailible = false;
-            }
-        }
-        
-        if (!boostIsAvailible) {
-            timer += Time.deltaTime;
-            
-            if (timer >= boostReloadTime){
-                boostIsAvailible = true;
-                timer = 0;
-                // Debug.Log("Boost Disponível!");
-            } else {
-                if (!(timer > 5))
-                    boostSlider.value = timer;
-            }
-        }
-
-        // Reposition the player on the Z Axis
-        if (transform.position.z != -4.90f){
-            transform.position = new Vector3(transform.position.x, transform.position.y, -4.90f);
-        }
-    }
+    }        
 
     public void applyBoost (float horizontalInput) {
         FindObjectOfType<AudioManager>().Play("[FX] BoostSound");    
@@ -258,12 +267,11 @@ public class Player : MonoBehaviour
         cubeIsontheGround = collision.gameObject.CompareTag("invisibleWallTwo") ? false   : true  ; // Se tocar em Killer ou Floor
 
         // Igonres RockPieces
-        if (collision.gameObject.CompareTag("RockPieces")){
-            // Debug.Log("Ignorando");
+        if (collision.gameObject.CompareTag("RockPieces")){            
             Physics.IgnoreCollision(collision.collider, gameObject.GetComponent<Collider>());
         }
 
-        // Impulse Destruction - Aditional Force when destructs a Rock
+        // # Rock Destruction - Aditional Force when destructs a Rock
         if (collision.gameObject.CompareTag("RockOnFloor")) {
             if (!boostIsAvailible){                
                 if (collision.relativeVelocity.magnitude > 8){                    
@@ -305,8 +313,10 @@ public class Player : MonoBehaviour
         }
 
         // # GameOver
-        if (collision.gameObject.CompareTag("Killer")){
-            if (collision.transform.position.y >= (transform.position.y+0.8f)){ // Tentativa de corrigir bug de quebrar caixa mesmo batendo de lado quando a pedra está no ar                
+        if (collision.gameObject.CompareTag("Killer"))
+        {
+            if (collision.transform.position.y >= (transform.position.y+0.8f)) // Tentativa de corrigir bug de quebrar caixa mesmo batendo de lado quando a pedra está no ar
+            { 
                 GameManager.GameOver();
                 explode();
             }            
@@ -361,11 +371,10 @@ public class Player : MonoBehaviour
                 }
             }                
         }
+        
+        Vector3 explosionPos = transform.position; // Retorna posição da Explosão        
+        Collider[] colliders = Physics.OverlapSphere(explosionPos, explosionRadius); // Retorna colliders nessa posição e radius
 
-        // Retorna posição da Explosão
-        Vector3 explosionPos = transform.position;
-        // Retorna colliders nessa posição e radius
-        Collider[] colliders = Physics.OverlapSphere(explosionPos, explosionRadius);
         // Adiciona força de Explosão a todos os colliders nesse Overlap Sphere
         foreach (Collider hit in colliders) {
             Rigidbody rb = hit.GetComponent<Rigidbody>();
@@ -383,7 +392,7 @@ public class Player : MonoBehaviour
                
         // Seta Escala
         plankWood.transform.position = transform.position + new Vector3(cubeSize * x, cubeSize * y, cubeSize * z) - cubesPivot;
-        plankWood.transform.localScale = new Vector3(cubeSize, cubeSize, cubeSize);
+        // plankWood.transform.localScale = new Vector3(cubeSize, cubeSize, cubeSize);
 
         // Seta a MASSA        
         plankWood.GetComponent<Rigidbody>().mass = cubeMass;        

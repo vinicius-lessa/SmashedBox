@@ -50,9 +50,7 @@ public class GameOverScreen : MonoBehaviour
         smashedText.transform.LeanSetLocalPosY(510f);
         smashedText.transform.LeanMoveLocalY(215f, 1f).setEaseInOutBack();
         
-
-        feedBackList.Clear(); // Clear everytime enters the game
-        //Debug.Log(feedBackList.Count);
+        feedBackList.Clear(); // Clear everytime enters the game        
 
         // Level1
         feedBackList.Add(0 , "A monkey would play Better than That!");
@@ -75,10 +73,8 @@ public class GameOverScreen : MonoBehaviour
         //Debug.Log(feedBackList.Count);
 
         m_EventSystem = EventSystem.current;
-        //clear selected object
-        m_EventSystem.SetSelectedGameObject(null);
-        //set a new selected object
-        m_EventSystem.SetSelectedGameObject(gameOverFirstButton);
+        m_EventSystem.SetSelectedGameObject(null); //clear selected object
+        m_EventSystem.SetSelectedGameObject(gameOverFirstButton); //set a new selected object        
     }
 
     private void Update() {
@@ -108,19 +104,13 @@ public class GameOverScreen : MonoBehaviour
 
     public void Setup(int score, bool newPersonalBest, string name) {        
         gameObject.SetActive(true); // Self Activate
-        
+
         if (newPersonalBest) {
-            NewRecordAnimation.transform.gameObject.SetActive(true);
-
-            /***********
+            PlayerPrefs.SetInt("PlayerPersonalBest", score); // Updates Temporary PlayerPrefs
             
-            // Updates Personal Best Score
-            int id = PlayerPrefs.GetInt("PlayerID", 0);
-            FindObjectOfType<ScoreBoard>().UpdateHighScore(id, score, name); // Valor é retornado em "GameManager.cs"            
+            HighScoreTable.GetComponent<HighScoreTable>().AddHighscoreEntry(score, name); // Stores new Score Value (Always)
 
-            ***********/
-
-            PlayerPrefs.SetInt("PlayerPersonalBest", score);
+            NewRecordAnimation.transform.gameObject.SetActive(true);
         }
         else {
             int sortFeedBack = 30;
@@ -142,7 +132,7 @@ public class GameOverScreen : MonoBehaviour
     public void RestartButton () {
         
         FindObjectOfType<AudioManager>().Play("[FX] SelectionConfirm");
-        
+
         // Call Game Scene
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
@@ -150,24 +140,19 @@ public class GameOverScreen : MonoBehaviour
     public void ExitButton () {
         // Debug.Log("Clicou em Exit.");
         FindObjectOfType<AudioManager>().Play("[FX] SelectionConfirm");
+        
         // Limpa PlayerPrefs        
-        
-        // PlayerPrefs.DeleteKey("PlayerName");
-        // PlayerPrefs.DeleteKey("PlayerID");
-        // PlayerPrefs.DeleteKey("PlayerPersonalBest");        
-        
-        // Call Menu Scene
+        PlayerPrefs.DeleteKey("PlayerName");
+        PlayerPrefs.DeleteKey("PlayerPersonalBest");
+
+        // Menu Scene
         SceneManager.LoadScene(0);
     }
 
-    /***********
-     
-    public void WorldRanking () {        
+    public void ScoreRanking() {
         FindObjectOfType<AudioManager>().Play("[FX] SelectionConfirm");
-        transform.gameObject.SetActive(false);
-        // Call HighScore Table
-        HighScoreTable.gameObject.SetActive(true);
-    }
 
-    ***********/
+        transform.gameObject.SetActive(false);        
+        HighScoreTable.gameObject.SetActive(true); // HighScore Table
+    }
 }

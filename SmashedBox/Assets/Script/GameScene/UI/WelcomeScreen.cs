@@ -112,7 +112,7 @@ public class WelcomeScreen : MonoBehaviour
 
     // Chamado ao clicar em "PLAY !"
     public void EnterPlay() {     
-        if (PlayerPrefs.GetInt("MuteMusicToogle", 0) == 0) // Default is False - Not Muted        
+        if (PlayerPrefs.GetInt("MuteMusicToogle", 0) == 0) // Default is False (Not Muted)
             FindObjectOfType<AudioManager>().FadeAudio("[TK] MainMenuTheme", 2f, false); // Fade Out
 
         FindObjectOfType<AudioManager>().Play("[FX] SelectionConfirm");
@@ -128,6 +128,17 @@ public class WelcomeScreen : MonoBehaviour
         StartCoroutine(CallGamePlay());        
     }
 
+    public IEnumerator CallGamePlay()
+    {
+        yield return new WaitForSeconds(1.6f);
+        
+        transform.gameObject.SetActive(false); // Disables itself
+
+        // STARTS THE GAME
+        GameManager.gameObject.SetActive(true);
+        // FindAnyObjectByType<GameManager>().StartGame();
+    }
+
     public void VerifyInput(){ 
         // Somente ativa o Botão de "Play" se atender a condição
         submitButton.interactable = (playerNameField.text.Length >= 3);
@@ -135,19 +146,5 @@ public class WelcomeScreen : MonoBehaviour
     
     public void InputToUpper(){
         playerNameField.text = playerNameField.text.ToUpper(); // Transforma em UPPERCASE
-    }
-
-    public IEnumerator CallGamePlay()
-    {
-        yield return new WaitForSeconds(1.6f);
-
-        // Desativa tela Inicial
-        transform.gameObject.SetActive(false);
-        
-        // STARTS THE GAME
-        Player.gameObject.SetActive(true);
-        GameManager.gameObject.SetActive(true);
-        UIGameplayText.SetActive(true);
-        PlayerHud.gameObject.SetActive(true);
     }
 }

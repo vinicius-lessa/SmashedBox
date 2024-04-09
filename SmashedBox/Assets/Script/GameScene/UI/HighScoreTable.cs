@@ -1,156 +1,152 @@
+/*
+ * @Documentaion
+ * 
+ * DESCRIPTION
+ *      Classe que possui métodos e objetos que são utilizados localmente e em outros scripts.
+ *      Video Aula: https://youtu.be/iAbaqGYdnyI
+ *
+ * DATES
+ *      14/07/2021 - Creation of script
+ *      15/07/2021 - Adição da tratativa que define se os dados utilizados serão locais ou via WEBRequest.
+ *      05/04/2024 - Start of the adaptation to persist data localy (PlayerPrefs)
+ *      08/04/2024 - Continuation of the changes to offline listing scores. Adaptation to use JSON forma storing in string format on PlayerPrefs.
+ *
+ * CLASSES
+ *      HighscoreEntry() - Represents ONE entry of Score record. It's Serializable
+ * 
+ *      HighscoreList() - List of HighscoreEntry objects
+ *
+ * METHODS:
+ *      Awake() 
+ *          Caches the UI elements to be used on the Table 
+ *          Sorts the Score entries to be Descending
+ *          Calls CreateHighscoreEntryTransform to Instantiate each line of the Table
+ *      
+ *      OnEnable()
+ *          Sets the Selected Button
+ *      
+ *      CreateHighscoreEntryTransform()
+ *          Instantiates one line on the table each with different requisites
+ *      
+ *      AddHighscoreEntry()
+ *          It reads a new score data, parses it into JSON, then saves it in PlayerPrefs
+ *      
+ *      BackButton() / CloseTable(): ...
+ *
+ * 
+*/
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
-
-/*
-### - INFO DOCMENT
-
-    Criador(es): VINÍCIUS LESSA (LessLax Studios)
-
-    Data: 14/07/2021
-
-    Atualizações: 
-        15/07/2021: adição da tratativa que define se os dados utilizados serão locais ou via WEBRequest.
-        05/04/2024: start with the adaptation to play offline
-
-    Descrição:  
-        Classe que possui métodos e objetos que são utilizados localmente e em outros scripts.
-        Video Aula: https://youtu.be/iAbaqGYdnyI
-
-    Métodos:
-        Awake(): irá fazer uma série de tratativas para consultar o RANK na tabela "highscoresTable" no PlayerPrefs. Ao fim chama o método CreateHighscoreEntryTransform para cada linha encontrada.
-        CreateHighscoreEntryTransform()    
-
-###*/
+using UnityEngine.SocialPlatforms.Impl;
 
 public class HighScoreTable : MonoBehaviour
 {
-    private Transform entryContainer;
-    private Transform entryTemplate;    
-    private Transform entryTemplateClone;
-
-    // List que contém SCORE e NAME
-    private List<HighscoreEntry> highscoreEntryListNew;    
-    private List<Transform> highscoreEntryTransformList;
     public GameOverScreen GameOverScreen;
-    public GameObject LoadingIcon, highScoreFirstButton;
+    public GameObject highScoreFirstButton;
+
+    // Reference - Render each line properly
+    private Transform entryContainer;
+    private Transform entryTemplate;
+    
+    private List<HighscoreEntry> highscoreEntryList; // Used for hardcoded Tests only
+    private List<Transform> highscoreEntryTransformList;    // ???
+
+    const string highscoreListKey = "highScoreTable";
 
     // private static JSONObject jsonScores;
 
-    // Receive this Value from IEnumerator "GetHighScore" from HighScoreRegistration script. It's used ahead in the code (ONLY WEB REQUEST)
+    // Receives this Value from GetHighScore() from ScoreBoard script. It's used bellow (ONLY WEB REQUEST)
     /*public static void receiveDataAll(JSONObject jsonScoresParameter){
         jsonScores = jsonScoresParameter;   
     }*/
 
-    /*private void OnEnable() 
+    [System.Serializable] // It must be Serializable ir order to be converted to JSON
+    private class HighscoreEntry {
+        public int score;
+        public string name;
+    }
+
+    private class Highscores {
+        public List<HighscoreEntry> highscoreEntryList;
+    }
+
+    private void Awake()
     {
-        //clear selected object
-        EventSystem.current.SetSelectedGameObject(null);
-        //set a new selected object
-        EventSystem.current.SetSelectedGameObject(highScoreFirstButton);   
+        entryContainer  = transform.Find("highscoreEnterContainer");
+        entryTemplate   = entryContainer.Find("highscoreEntryTemplate");
 
-        LoadingIcon.gameObject.SetActive(true);
-        StartCoroutine(ProcessData());        
-    }*/
+        entryTemplate.gameObject.SetActive(false);
 
-    /*IEnumerator ProcessData(){
-        entryContainer = transform.Find("highscoreEnterContainer");
-        entryTemplate = entryContainer.Find("highscoreEntryTemplate");
-
-        entryTemplate.gameObject.SetActive(false);        
-                
-        Highscores highscores;
-        List<HighscoreEntry> highscoreEntryListDatabase;
-        
-        // Call IEnumerator "GetHishScore" from "HighScoreRegistration" Script        
-        string typeSeek = "allData";        // NO FILTERS ON BACK-END
-        FindObjectOfType<ScoreBoard>().GetHighScore(typeSeek);
-        
-        // Way I found to wait for response from the Server (it will cancel the request after 2 seconds)
-        int y = 1;
-        while(jsonScores == null)
+        // Test Obj        
+        /*highscoreEntryList = new List<HighscoreEntry>()
         {
-            yield return new WaitForSeconds(1f);
-            y++;
-            if (y > 15){
-                // Debug.Log("Cancelando Requisição - #HighScoreTable.cs - IEnumerator ProcessData()");
-                break;
+            new HighscoreEntry { score = 516, name = "ADAM"},
+            new HighscoreEntry { score = 546, name = "ALEX"},
+            new HighscoreEntry { score = 854, name = "JOEL"}
+        };*/
+
+        string jsonString = PlayerPrefs.GetString(highscoreListKey);
+        Highscores highscores = JsonUtility.FromJson<Highscores>(jsonString);
+
+        // Sort Entry by Score (Descending)
+        for (int i = 0; i < highscores.highscoreEntryList.Count; i++)
+        {
+            for (int j = i + 1; j < highscores.highscoreEntryList.Count; j++)
+            {
+                if (highscores.highscoreEntryList[j].score > highscores.highscoreEntryList[i].score)
+                {
+                    // SWAP
+                    HighscoreEntry tmp = highscores.highscoreEntryList[i];
+                    highscores.highscoreEntryList[i] = highscores.highscoreEntryList[j];
+                    highscores.highscoreEntryList[j] = tmp;
+                }
             }
         }
 
-        yield return new WaitForSeconds(1f);        
+        highscoreEntryTransformList = new List<Transform>();
 
-        if (jsonScores == null) {
-            // Debug.Log("Erro na requisição - #HighScoreTable.cs - IEnumerator ProcessData()");
-        } else {
-            // Debug.Log("Sucesso na requisição - #HighScoreTable.cs - IEnumerator ProcessData()");
-            highscoreEntryListDatabase = new List<HighscoreEntry>() {};
+        // Inatantiate Lines
+        int x = 0;
+        foreach (HighscoreEntry highscoreEntry in highscores.highscoreEntryList)
+        {
+            x++;
+            if (!(x <= 10)) break; // Limite de 10 linhas
+            CreateHighscoreEntryTransform(highscoreEntry, entryContainer, highscoreEntryTransformList);
+        }
 
-            highscores = new Highscores { highscoreEntryList = highscoreEntryListDatabase };
-
-            // Debug.Log(jsonData.Count);
-        
-            for(int i = 0; i < jsonScores.list.Count; i++) {
-                
-                // Debug.Log(jsonScores[i].GetField("playername").ToString() + " - " + jsonScores[i].GetField("score").ToString());
-
-                // Needed to format in the Righ way both of the Fiedls berfore anything
-                
-                int tmpId = int.Parse(jsonScores[i].GetField("id").ToString().Trim('"'));       // Deletes " in the both sides, after that Transforms in INT
-                string tmpName = jsonScores[i].GetField("playername").ToString().Trim('"');     // Deletes " in the both sides
-                int tmpScore = int.Parse(jsonScores[i].GetField("score").ToString().Trim('"')); // Deletes " in the both sides, after that Transforms in INT 
+        /*Highscores highscores = new Highscores() { highscoreEntryList = highscoreEntryList };
+        string jsonString = JsonUtility.ToJson(highscores);
+        PlayerPrefs.SetString(highscoreListKey, jsonString);
+        PlayerPrefs.Save();*/
+    }
 
 
-                HighscoreEntry highscoreEntry = 
-                    new HighscoreEntry { 
-                        score = tmpScore,
-                        name = tmpName
-                    };
+    private void OnEnable()
+    {
+        EventSystem.current.SetSelectedGameObject(null); //clear selected object
+        EventSystem.current.SetSelectedGameObject(highScoreFirstButton); //set a new selected object
+    }
 
-                highscores.highscoreEntryList.Add(highscoreEntry);
-            }    
-            
-            // Ordena do Maior ou Menor
-            for (int i = 0; i < highscores.highscoreEntryList.Count; i++){
-                for (int j = i + 1; j < highscores.highscoreEntryList.Count; j++) {
-                    if (highscores.highscoreEntryList[j].score > highscores.highscoreEntryList[i].score) {
-                        // SWAP
-                        HighscoreEntry tmp = highscores.highscoreEntryList[i];
-                        highscores.highscoreEntryList[i] = highscores.highscoreEntryList[j];
-                        highscores.highscoreEntryList[j] = tmp;
-                    }
-                }
-            }
 
-            LoadingIcon.gameObject.SetActive(false);
-            highscoreEntryTransformList = new List<Transform>();
-            
-            int x = 0;
-            foreach (HighscoreEntry highscoreEntry in highscores.highscoreEntryList) {            
-                x++;
-                // Limita tabela de HighScores para 10 linhas
-                if (!(x <= 10))
-                    yield break;
-                    CreateHighscoreEntryTransform(highscoreEntry, entryContainer, highscoreEntryTransformList); 
-            }
-
-            // // Debug.Log(PlayerPrefs.GetString("highscoreTable"));
-        }       
-    }*/
-
-    private void CreateHighscoreEntryTransform(HighscoreEntry highscoreEntry, Transform container, List<Transform> transformList) {
+    private void CreateHighscoreEntryTransform(HighscoreEntry highscoreEntry, Transform container, List<Transform> transformList) 
+    {
         float templateHeight = 25f;
+
         Transform entryTransform = Instantiate(entryTemplate, container);
         RectTransform entryRectTransform = entryTransform.GetComponent<RectTransform>();
+
         entryRectTransform.anchoredPosition = new Vector2(0, -templateHeight * transformList.Count);
         entryTransform.gameObject.SetActive(true);
 
         int rank = transformList.Count + 1;
         string rankString;
-        switch (rank) {
+        switch (rank)
+        {
             default:
                 rankString = rank + "th"; break;
 
@@ -171,39 +167,34 @@ public class HighScoreTable : MonoBehaviour
         // entryTransform.Find("background").gameObject.SetActive(rank % 2 == 1);
 
         // Destaca Player Atual
-        if (name == PlayerPrefs.GetString("PlayerName", "")) {
-            // entryTransform.Find("[Text] Position").GetComponent<TextMeshProUGUI>().color = Color.red;
-            // entryTransform.Find("[Text] Position").GetComponent<TextMeshProUGUI>().fontWeight = FontWeight.Bold;
-            // entryTransform.Find("[Text] Position").GetComponent<TextMeshProUGUI>().fontSize = 15;
-            
-            // entryTransform.Find("[Text] Score").GetComponent<TextMeshProUGUI>().color = Color.red;
-            // entryTransform.Find("[Text] Score").GetComponent<TextMeshProUGUI>().fontWeight = FontWeight.Bold;
-            // entryTransform.Find("[Text] Score").GetComponent<TextMeshProUGUI>().fontSize = 15;
-
+        if (name == PlayerPrefs.GetString("PlayerName", ""))
+        {
             entryTransform.Find("[Text] Name").GetComponent<TextMeshProUGUI>().color = Color.red;
-            entryTransform.Find("[Text] Name").GetComponent<TextMeshProUGUI>().fontWeight = FontWeight.Bold;            
+            entryTransform.Find("[Text] Name").GetComponent<TextMeshProUGUI>().fontWeight = FontWeight.Bold;
         }
 
-        // Forme de setar cores por HEXADECIMAL
+        // Cores por HEXADECIMAL
         Color colorGold;
-        Color colorSilver;
-        Color colorBronze;
-
         ColorUtility.TryParseHtmlString("#FFD700", out colorGold);
+
+        Color colorSilver;
         ColorUtility.TryParseHtmlString("#C0C0C0", out colorSilver);
+        
+        Color colorBronze;
         ColorUtility.TryParseHtmlString("#CD7F32", out colorBronze);
 
         // Set Trophy ACTIVE and COLOR
-        switch (rank) {
-            default: 
+        switch (rank)
+        {
+            default:
                 entryTransform.Find("Trophy").gameObject.SetActive(false);
-            break;
+                break;
             case 1:
                 entryTransform.Find("Trophy").gameObject.GetComponent<Image>().color = colorGold;
                 break;
             case 2:
                 entryTransform.Find("Trophy").gameObject.GetComponent<Image>().color = colorSilver;
-                break;            
+                break;
             case 3:
                 entryTransform.Find("Trophy").gameObject.GetComponent<Image>().color = colorBronze;
                 break;
@@ -212,23 +203,37 @@ public class HighScoreTable : MonoBehaviour
         transformList.Add(entryTransform);
     }
 
-    private class Highscores {
-        public List<HighscoreEntry> highscoreEntryList;
+    public void AddHighscoreEntry(int score, string name)
+    {
+        HighscoreEntry highscoreEntry = new() { score = score, name = name };
+        
+        Highscores highscores;
+        string jsonString;
+        
+        if (PlayerPrefs.HasKey(highscoreListKey)) // Load Saved Highscores (if there's any)
+        {
+            jsonString = PlayerPrefs.GetString(highscoreListKey);
+            highscores = JsonUtility.FromJson<Highscores>(jsonString);
+            highscores.highscoreEntryList.Add(highscoreEntry); // Add new Entry to Highscores Obj
+        }
+        else  // Empty List - First Score Ever
+        {
+            highscores = new Highscores() { highscoreEntryList = new List<HighscoreEntry>() { highscoreEntry } };
+        }
+
+        // Save it in Playerprefs        
+        jsonString = JsonUtility.ToJson(highscores);
+        PlayerPrefs.SetString(highscoreListKey, jsonString);
+        PlayerPrefs.Save();        
+
     }
 
-    // Representa uma "fonte" de dados para gravação de um score
-
-    [System.Serializable]
-    private class HighscoreEntry {
-        public int score;
-        public string name;
-    }
-
-    public void BackButton() {        
+    public void BackButton() {
         StartCoroutine(CloseTable());
     }
 
-    IEnumerator CloseTable() {
+    private IEnumerator CloseTable() 
+    {
         FindObjectOfType<AudioManager>().Play("[FX] SelectionConfirm");
         gameObject.GetComponent<Animator>().SetTrigger("CloseTable");
 
