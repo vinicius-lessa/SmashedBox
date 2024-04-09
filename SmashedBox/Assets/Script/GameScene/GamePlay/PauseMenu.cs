@@ -132,9 +132,9 @@ public class PauseMenu : MonoBehaviour
         
         GameIsPause = false;
 
-        // Limpa PlayerPrefs
-        PlayerPrefs.DeleteKey("PlayerName");
-        PlayerPrefs.DeleteKey("PlayerPersonalBest");
+        // Clear Player Prefs
+        PlayerPrefs.DeleteKey(GameManager.playerNameKey);
+        PlayerPrefs.DeleteKey(GameManager.playerPersonalBestKey);
 
         Time.timeScale = 1f;
         GameManager.score = 0;        
@@ -149,11 +149,11 @@ public class PauseMenu : MonoBehaviour
         
         GameIsPause = false;
 
-        // Limpa PlayerName
-        PlayerPrefs.DeleteKey("PlayerName");
-        PlayerPrefs.DeleteKey("PlayerPersonalBest");
+        // Clear Player Prefs
+        PlayerPrefs.DeleteKey(GameManager.playerNameKey);
+        PlayerPrefs.DeleteKey(GameManager.playerPersonalBestKey);
         // PlayerPrefs.DeleteAll();
-        
+
         Application.Quit();
     } 
 }

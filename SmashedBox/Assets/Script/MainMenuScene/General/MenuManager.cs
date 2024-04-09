@@ -22,8 +22,7 @@ using System.Collections;
 
 public class MenuManager : MonoBehaviour
 {
-    public GameObject menuPanel;    
-        
+    public GameObject menuPanel;
     public GameObject optionsPanel; // Called when certain Button is clicked
 
     private void Start()
@@ -60,14 +59,12 @@ public class MenuManager : MonoBehaviour
     public void QuitGameButton() 
     {
         FindObjectOfType<AudioManager>().Play("[FX] SelectionConfirm");
-        
-        // PlayerPrefs.DeleteKey("PlayerID");
-        // PlayerPrefs.DeleteKey("PlayerPersonalBest");
-        // PlayerPrefs.DeleteKey("InternetConnection");
-        
+
+        // Clear Player Prefs
+        PlayerPrefs.DeleteKey(GameManager.playerNameKey);
+        PlayerPrefs.DeleteKey(GameManager.playerPersonalBestKey);
         // PlayerPrefs.DeleteAll();
         
-        Debug.Log("Quiting the game and Cleaning Data!");
         Application.Quit();
     }
 

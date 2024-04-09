@@ -28,6 +28,10 @@
  *      CreateHighscoreEntryTransform()
  *          Instantiates one line on the table each with different requisites
  *      
+ *      public GetAllScores()
+ *          Returns a object of tipy Highscores (list of highscore entries) from PlayerPrefs (string JSON)
+ *          It's calleed in GameOverScreen.Setup()
+ *      
  *      AddHighscoreEntry()
  *          It reads a new score data, parses it into JSON, then saves it in PlayerPrefs
  *      
@@ -56,22 +60,15 @@ public class HighScoreTable : MonoBehaviour
     private List<HighscoreEntry> highscoreEntryList; // Used for hardcoded Tests only
     private List<Transform> highscoreEntryTransformList;    // ???
 
-    const string highscoreListKey = "highScoreTable";
-
-    // private static JSONObject jsonScores;
-
-    // Receives this Value from GetHighScore() from ScoreBoard script. It's used bellow (ONLY WEB REQUEST)
-    /*public static void receiveDataAll(JSONObject jsonScoresParameter){
-        jsonScores = jsonScoresParameter;   
-    }*/
+    public const string highscoreListKey = "HighScoreJson"; // PlayerPrefs Key
 
     [System.Serializable] // It must be Serializable ir order to be converted to JSON
-    private class HighscoreEntry {
+    public class HighscoreEntry {
         public int score;
         public string name;
     }
 
-    private class Highscores {
+    public class Highscores {
         public List<HighscoreEntry> highscoreEntryList;
     }
 
@@ -90,23 +87,8 @@ public class HighScoreTable : MonoBehaviour
             new HighscoreEntry { score = 854, name = "JOEL"}
         };*/
 
-        string jsonString = PlayerPrefs.GetString(highscoreListKey);
-        Highscores highscores = JsonUtility.FromJson<Highscores>(jsonString);
 
-        // Sort Entry by Score (Descending)
-        for (int i = 0; i < highscores.highscoreEntryList.Count; i++)
-        {
-            for (int j = i + 1; j < highscores.highscoreEntryList.Count; j++)
-            {
-                if (highscores.highscoreEntryList[j].score > highscores.highscoreEntryList[i].score)
-                {
-                    // SWAP
-                    HighscoreEntry tmp = highscores.highscoreEntryList[i];
-                    highscores.highscoreEntryList[i] = highscores.highscoreEntryList[j];
-                    highscores.highscoreEntryList[j] = tmp;
-                }
-            }
-        }
+        Highscores highscores = this.GetAllScores();        
 
         highscoreEntryTransformList = new List<Transform>();
 
@@ -118,11 +100,11 @@ public class HighScoreTable : MonoBehaviour
             if (!(x <= 10)) break; // Limite de 10 linhas
             CreateHighscoreEntryTransform(highscoreEntry, entryContainer, highscoreEntryTransformList);
         }
-
-        /*Highscores highscores = new Highscores() { highscoreEntryList = highscoreEntryList };
-        string jsonString = JsonUtility.ToJson(highscores);
-        PlayerPrefs.SetString(highscoreListKey, jsonString);
-        PlayerPrefs.Save();*/
+        
+        //Highscores highscores = new Highscores() { highscoreEntryList = highscoreEntryList };
+        //string jsonString = JsonUtility.ToJson(highscores);
+        //PlayerPrefs.SetString(highscoreListKey, jsonString);
+        //PlayerPrefs.Save();
     }
 
 
@@ -131,7 +113,6 @@ public class HighScoreTable : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(null); //clear selected object
         EventSystem.current.SetSelectedGameObject(highScoreFirstButton); //set a new selected object
     }
-
 
     private void CreateHighscoreEntryTransform(HighscoreEntry highscoreEntry, Transform container, List<Transform> transformList) 
     {
@@ -203,18 +184,53 @@ public class HighScoreTable : MonoBehaviour
         transformList.Add(entryTransform);
     }
 
-    public void AddHighscoreEntry(int score, string name)
+    public Highscores GetAllScores() 
     {
-        HighscoreEntry highscoreEntry = new() { score = score, name = name };
+        Highscores highscores = new Highscores() { };
+
+        if (PlayerPrefs.HasKey(highscoreListKey))
+        {
+            string jsonString = PlayerPrefs.GetString(highscoreListKey);
+            highscores = JsonUtility.FromJson<Highscores>(jsonString);
+
+            // Sort Entry by Score (Descending)
+            for (int i = 0; i < highscores.highscoreEntryList.Count; i++)
+            {
+                for (int j = i + 1; j < highscores.highscoreEntryList.Count; j++)
+                {
+                    if (highscores.highscoreEntryList[j].score > highscores.highscoreEntryList[i].score)
+                    {
+                        // SWAP
+                        HighscoreEntry tmp = highscores.highscoreEntryList[i];
+                        highscores.highscoreEntryList[i] = highscores.highscoreEntryList[j];
+                        highscores.highscoreEntryList[j] = tmp;
+                    }
+                }
+            }
+        }
+
+        return highscores;
+    }
+
+    public void AddHighscoreEntry(int score, string playerName)
+    {
+        HighscoreEntry highscoreEntry = new() { score = score, name = playerName };
         
         Highscores highscores;
         string jsonString;
         
         if (PlayerPrefs.HasKey(highscoreListKey)) // Load Saved Highscores (if there's any)
         {
-            jsonString = PlayerPrefs.GetString(highscoreListKey);
-            highscores = JsonUtility.FromJson<Highscores>(jsonString);
-            highscores.highscoreEntryList.Add(highscoreEntry); // Add new Entry to Highscores Obj
+            highscores = this.GetAllScores();
+            
+            if ( highscores.highscoreEntryList.Find(x => (x.name == playerName)) == null) // Insert First Score
+            {
+                highscores.highscoreEntryList.Add(highscoreEntry); // Add new Entry to Highscores Obj      
+            }
+            else // Updates Score
+            {
+                highscores.highscoreEntryList.Find(x => (x.name == playerName)).score = score;
+            }
         }
         else  // Empty List - First Score Ever
         {

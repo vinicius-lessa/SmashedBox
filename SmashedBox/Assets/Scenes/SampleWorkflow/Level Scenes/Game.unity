@@ -2534,7 +2534,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 776467689}
         m_TargetAssemblyTypeName: GameOverScreen, Assembly-CSharp
-        m_MethodName: ScoreRanking
+        m_MethodName: HighScoreTableBtn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7107,7 +7107,7 @@ MonoBehaviour:
   cubeSize: 0.08
   cubeMass: 0.1
   cubesInRow: 3
-  explosionForce: 80
+  explosionForce: 40
   explosionRadius: 4
   explosionUpward: 0.4
   footDust: {fileID: 1554722642}
@@ -10147,6 +10147,7 @@ MonoBehaviour:
   PlayerHud: {fileID: 458217086}
   ScoreUI: {fileID: 32410292}
   WelcomeScreen: {fileID: 30721160}
+  HighScoreTableObj: {fileID: 1827179289}
   materialDay: {fileID: 2100000, guid: 2bd8959f5fbd3644aa33af1a155fc147, type: 2}
   materialNight: {fileID: 2100000, guid: cc421da483ed06c49933077a621bff25, type: 2}
   materialBlend: {fileID: 2100000, guid: 1cf6f4c6e6e0518419839d3f5448dd99, type: 2}
@@ -28087,7 +28088,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 465, y: 318}
+  m_AnchoredPosition: {x: 474.5001, y: 322.69998}
   m_SizeDelta: {x: 76.8437, y: 14.3025}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1391989078
@@ -28110,7 +28111,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'ScoreBoard:'
+  m_text: 'Highest Score:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 99b1bf077b0d9ad47a6f62c237c85b9e, type: 2}
   m_sharedMaterial: {fileID: 8410166888702872720, guid: 99b1bf077b0d9ad47a6f62c237c85b9e, type: 2}
@@ -28173,7 +28174,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: -12.127041, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -50493,8 +50494,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 99.5, y: -7.703}
-  m_SizeDelta: {x: 104.0019, y: 27.206}
+  m_AnchoredPosition: {x: 94.56333, y: -7.703}
+  m_SizeDelta: {x: 113.8753, y: 27.206}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1957770987
 MonoBehaviour:
@@ -50516,7 +50517,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: LESSLAX
+  m_text: RENTCARR
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: db8d86f727ca93c44ae0389a65addc49, type: 2}
   m_sharedMaterial: {fileID: -1527963961739137189, guid: db8d86f727ca93c44ae0389a65addc49, type: 2}
@@ -50550,8 +50551,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 1
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -52679,7 +52680,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 613.5, y: 318.69998}
+  m_AnchoredPosition: {x: 623, y: 323.4}
   m_SizeDelta: {x: 28.681, y: 13.686}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2117609181
@@ -52765,7 +52766,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: -5.63927, w: 0}
+  m_margin: {x: 0, y: 0, z: -0.036566734, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

@@ -140,16 +140,16 @@ public class GameOverScreen : MonoBehaviour
     public void ExitButton () {
         // Debug.Log("Clicou em Exit.");
         FindObjectOfType<AudioManager>().Play("[FX] SelectionConfirm");
-        
+
         // Limpa PlayerPrefs        
-        PlayerPrefs.DeleteKey("PlayerName");
-        PlayerPrefs.DeleteKey("PlayerPersonalBest");
+        PlayerPrefs.DeleteKey(GameManager.playerNameKey);
+        PlayerPrefs.DeleteKey(GameManager.playerPersonalBestKey);
 
         // Menu Scene
         SceneManager.LoadScene(0);
     }
 
-    public void ScoreRanking() {
+    public void HighScoreTableBtn() {
         FindObjectOfType<AudioManager>().Play("[FX] SelectionConfirm");
 
         transform.gameObject.SetActive(false);        

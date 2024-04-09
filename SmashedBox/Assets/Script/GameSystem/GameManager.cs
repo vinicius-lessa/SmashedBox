@@ -14,6 +14,15 @@
  *      19/07/2021 - Vinícius Lessa (LessLax): Creation of script
  *      10/03/2024 - Vinícius Lessa (LessLax): Start of changes to disable online scoreboarding and connectivity check
  *   
+ * METHODS
+ *      GetAllTimeHighestScore()
+ *          Gets the Highest Score ever recorded within PlayerPrefs
+ *          Interacts with HighScoreTable
+ *          
+ *      GetPlayerHighestScore(string playerName)
+ *          Gets the Highest Score ever recorded for the Current Player Name
+ *          Interacts with HighScoreTable
+ *   
 */
 
 /*  
@@ -35,6 +44,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using TMPro;
+using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
@@ -45,6 +55,7 @@ public class GameManager : MonoBehaviour
     public GameObject PlayerHud;  // Boost Bar & Commands Help
     public GameObject ScoreUI;
     public GameObject WelcomeScreen;
+    public GameObject HighScoreTableObj;
 
     // # Materials
     public Material materialDay , materialNight, materialBlend; // SkyBoxes    
@@ -93,11 +104,19 @@ public class GameManager : MonoBehaviour
     public GameObject hitTextOne, hitTextTwo;
     private static bool comboHit = false;
 
+    // PlayerPrefs Key
+    public const string playerNameKey = "PlayerName";
+    public const string playerPersonalBestKey = "PlayerPersonalBest";
+
     private GameManager instance;
 
     private void Awake()
     {
         instance = this;
+
+        //Test Purposes Only
+        //PlayerPrefs.DeleteKey(HighScoreTable.highscoreListKey);
+        //PlayerPrefs.DeleteKey(GameManager.playerNameKey);
     }
 
     void OnEnable() 
@@ -109,12 +128,13 @@ public class GameManager : MonoBehaviour
         clips               = animatorLevelText.runtimeAnimatorController.animationClips;
 
         // bool startGame  = false;
-        playerName = PlayerPrefs.GetString("PlayerName", "").ToString();
+        playerName = PlayerPrefs.GetString(GameManager.playerNameKey, "").ToString();
 
         // Check if There's a Player Logged
         if (string.IsNullOrEmpty(playerName)) {
+            ScoreUI.SetActive(false);
             WelcomeScreenCall();
-        } 
+        }
         else {
             StartGame();
         }
@@ -190,7 +210,7 @@ public class GameManager : MonoBehaviour
         gameOver = true;
     }
 
-    void GameOverManager() 
+    private void GameOverManager() 
     {
         bool newPersonalBest;
 
@@ -246,7 +266,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        GameOverScreen.Setup(score, newPersonalBest, PlayerPrefs.GetString("PlayerName"));
+        GameOverScreen.Setup(score, newPersonalBest, PlayerPrefs.GetString(GameManager.playerNameKey));
 
         // Clear Level State
         levelOneisRunning       = false;
@@ -258,14 +278,38 @@ public class GameManager : MonoBehaviour
 
     private int GetPlayerHighestScore(string playerName)
     {
-        int score = PlayerPrefs.GetInt("PlayerPersonalBest", 0);
-        return score;
+        int personalBestScore = 0;
+
+        HighScoreTable.Highscores highscores = HighScoreTableObj.GetComponent<HighScoreTable>().GetAllScores();
+
+        // Search Score for granted PlayerName
+        if (PlayerPrefs.HasKey(HighScoreTable.highscoreListKey))
+        {
+            HighScoreTable.HighscoreEntry _highestScoreEntry = highscores.highscoreEntryList.Find(x => (x.name == playerName));
+
+            personalBestScore = _highestScoreEntry is null ? 0 : _highestScoreEntry.score;
+        }
+
+        PlayerPrefs.SetInt(GameManager.playerPersonalBestKey, personalBestScore); // Personal Best TMP
+        return personalBestScore;
     }
 
     private int GetAllTimeHighestScore()
     {
-        int score = PlayerPrefs.GetInt("PlayerPersonalBest", 0);
-        return score;
+        int highestScore = 0;
+
+        HighScoreTable.Highscores highscores = HighScoreTableObj.GetComponent<HighScoreTable>().GetAllScores(); // Get Scores
+
+        // If there's SCORE to Get
+        if (PlayerPrefs.HasKey(HighScoreTable.highscoreListKey))
+        {
+            HighScoreTable.HighscoreEntry _highestScoreEntry = highscores.highscoreEntryList[0]; // Get only the 1st Position
+
+            highestScore = _highestScoreEntry is null ? 0 : _highestScoreEntry.score;
+        }
+
+        PlayerPrefs.SetInt("HighestScore", highestScore); // Best Score TMP
+        return highestScore;
     }
 
     private IEnumerator InstantiateStone(){
