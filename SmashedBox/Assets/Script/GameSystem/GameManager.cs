@@ -25,33 +25,16 @@
  *   
 */
 
-/*  
-CHECK / DELETE
-    NetWorkErroImg
-    NetWorkErroImgTwo
-    LoadingIcon
-    LoadingIconTwo
-    highestScoreTMP
-    personalBestTMP
-    idTMP
-    isConnectedServer
-    ParsePlayerScore
-    InternetConnection
-    PlayerID
-*/
-
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using TMPro;
-using System.Linq;
 
 public class GameManager : MonoBehaviour
 {
     // # External GameObjs
     public GameOverScreen GameOverScreen;
     public GameObject StonePrefab, PlayerObj; // Killer, Player
-    public GameObject NetWorkErroImg, NetWorkErroImgTwo, LoadingIcon, LoadingIconTwo;       // NetWorkError Icons & Loading Icons
     public GameObject PlayerHud;  // Boost Bar & Commands Help
     public GameObject ScoreUI;
     public GameObject WelcomeScreen;
@@ -94,7 +77,7 @@ public class GameManager : MonoBehaviour
     string playerName;
 
     // Players ScoreBoard Data
-    private int highestScoreTMP, personalBestTMP, idTMP;
+    private int highestScoreTMP, personalBestTMP;
     
     // GameOver / Levels
     private static bool gameOver;   
@@ -108,15 +91,11 @@ public class GameManager : MonoBehaviour
     public const string playerNameKey = "PlayerName";
     public const string playerPersonalBestKey = "PlayerPersonalBest";
 
-    private GameManager instance;
+    private GameManager instance; // Self Component Caching
 
     private void Awake()
     {
-        instance = this;
-
-        //Test Purposes Only
-        //PlayerPrefs.DeleteKey(HighScoreTable.highscoreListKey);
-        //PlayerPrefs.DeleteKey(GameManager.playerNameKey);
+        instance = this;      
     }
 
     void OnEnable() 
@@ -312,7 +291,7 @@ public class GameManager : MonoBehaviour
         return highestScore;
     }
 
-    private IEnumerator InstantiateStone(){
+    IEnumerator InstantiateStone(){
         // Pós GameOver
         if (gameOverScreenShowed)
         {
@@ -412,7 +391,7 @@ public class GameManager : MonoBehaviour
         yield return InstantiateStone();
     }
 
-    private IEnumerator LevelManager(int levelNumber){        
+    IEnumerator LevelManager(int levelNumber){        
         int sortBornFX;
         Light DirLightComponent = DirectionalLight.gameObject.GetComponent<Light>();        
 

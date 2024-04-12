@@ -3,7 +3,7 @@
 * 
 * DESCRIPTION
 *       Este scrit está atrelado ao GameObject do tipo UI presente na hieranquia da SCENE "GAME"
-*       Apresenta tela inicial de boas vindas toda vez que o jogo for aberto (caso playerID não esteja preenchido).
+*       Apresenta tela inicial de boas vindas sempre que o PlayerPrefs("PlayerName") estiver vazio.
 *       Captura e trata os dados recebidos via input informados pelo player para o 'Scoreboard'
 *
 * DATES

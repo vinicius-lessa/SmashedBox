@@ -1,9 +1,3 @@
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using TMPro;
-using UnityEngine.EventSystems;
-using System.Collections;
-
 /*
  * @Documentaion
  * 
@@ -19,6 +13,12 @@ using System.Collections;
  *      Formatos de Movimento (Boost - setEase...): https://codepen.io/jhnsnc/pen/LpVXGM
  *
 */
+
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using TMPro;
+using UnityEngine.EventSystems;
+using System.Collections;
 
 public class GameOverScreen : MonoBehaviour
 {

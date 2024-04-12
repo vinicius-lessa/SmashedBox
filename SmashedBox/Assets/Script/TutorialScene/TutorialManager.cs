@@ -1,3 +1,25 @@
+/*
+ * @Documentaion
+ * 
+ * DESCRIPTION
+ *      Script utilizado somente em scene "Tutorial".
+ *      Tutorial manager, atualmente atribuído como componente ao Painel que contém o botão de "SKIP"
+ *
+ * DATES
+ *      10/08/2021 - Creation of script
+ *      11/08/2021
+ *          Mudança do GameObject o qual o script estava atribuído de "Painel" para "TutorialManager". Realizada as devidas alterações necessárias para referenciar objetos utilizados, além disto, adicionado sistema de seleção de botões e ativação
+ *          da seta lateral dos mesmos. Também é tratado o processo de passar os vídeos de tutoriasi que no total são 4 deles, através do "click" do botão "continue".
+ *      16/08/2021
+ *          Mudança referente ao processo de carregamento da cena "Game" (quando a mesma for chamada), a fim de dar um retorno ao player sobre o progresso do carregamento do jogo.
+ *      11/04/2024
+ *          Correction for the video not playing in WebGL build game - Now the videos will be played by URL (path)
+ *   
+ * METHODS
+ *      ...
+ *   
+*/
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,33 +29,10 @@ using UnityEngine.Video;
 using UnityEngine.UI;
 using TMPro;
 
-/*
-### - DOC    
-
-    Creator(s): VINÍCIUS LESSA (LessLax Studios)
-
-    Date: 10/08/2021
-
-    Description:
-        Script utilizado somente em scene "Tutorial".
-        Tutorial manager, atualmente atribuído como componente ao Painel que contém o botão de "SKIP"
-
-    Changes:
-        11/08/2021 - Vinícius Lessa:
-        Mudança do GameObject o qual o script estava atribuído de "Painel" para "TutorialManager".
-        Realizada as devidas alterações necessárias para referenciar objetos utilizados, além disto, adicionado sistema de seleção de botões e ativação
-        da seta lateral dos mesmos.
-        Também é tratado o processo de passar os vídeos de tutoriasi que no total são 4 deles, através do "click" do botão "continue".
-
-        16/08/2021 - Vinícius Lessa:
-        Mudança referente ao processo de carregamento da cena "Game" (quando a mesma for chamada), a fim de dar um retorno ao player sobre o progresso do carregamento do jogo.
-
-*/
-
 public class TutorialManager : MonoBehaviour
 {    
     private float transitonTime = 1f; // AudioOut and FadeOut  
-    private int videoSelected = 0;  // Saves the Current Playing Video
+    private int videoIndex = 0;  // Saves the Current Playing Video
     private bool isFirtVideo;
     
     // # External GameObjects
@@ -56,9 +55,12 @@ public class TutorialManager : MonoBehaviour
     // # Game Scene
     public GameObject videoPanel;
     public GameObject loadingScreen;
- 
-    private void Start() {
-        PlayerPrefs.SetInt("TutorialIsShowed", 1); // Tutorial showed
+
+    //[SerializeField] string videoFileName;
+    
+
+    void Start() {
+        PlayerPrefs.SetInt("TutorialIsShowed", 1); // Tutorial IS Showed now
         
         isFirtVideo = true;
         NextVideoButton();
@@ -70,24 +72,20 @@ public class TutorialManager : MonoBehaviour
         return;
     }
 
-    private void OnEnable() {
+    void OnEnable() {
         FindObjectOfType<CrossFade>().CrossFadeIn(2f);
 
         tutorialIsShowed = PlayerPrefs.GetInt("TutorialIsShowed", 0) == 0 ? false : true;
         
-        if (tutorialIsShowed) {
+        if (tutorialIsShowed)
             backButtonObj.SetActive(true);
-        } else {
-            skipButtonObj.SetActive(true);
-        }
+        else
+            skipButtonObj.SetActive(true);        
         
-
         m_EventSystem = EventSystem.current;
-
-        //clear selected object
-        m_EventSystem.SetSelectedGameObject(null);
-        //set a new selected object
-        m_EventSystem.SetSelectedGameObject(tutorialFirstButton);        
+        
+        m_EventSystem.SetSelectedGameObject(null); //clear selected object        
+        m_EventSystem.SetSelectedGameObject(tutorialFirstButton); //set a new selected object
     }
 
     private void Update() {
@@ -120,40 +118,65 @@ public class TutorialManager : MonoBehaviour
     private void GetLastGameObjectSelected() {        
         if (m_EventSystem.currentSelectedGameObject != currentSelectedGameObject_Recent) {            
             if (isFirstSelected)
-            {
                 FindObjectOfType<AudioManager>().Play("[FX] SwitchButtonSelection");
-            }
+
             isFirstSelected = true;
-
             lastSelectedGameObject = currentSelectedGameObject_Recent;
-
             currentSelectedGameObject_Recent = m_EventSystem.currentSelectedGameObject;
         }
     }
 
     public void NextVideoButton()
     {
-        // Changes the Video on Display        
-        if (!isFirtVideo) {
-            FindObjectOfType<AudioManager>().Play("[FX] SelectionConfirm");
-            TutorialVideos[videoSelected].transform.GetChild(0).GetComponent<VideoPlayer>().Stop();            
+        GameObject videoParent  = TutorialVideos[videoIndex];
+        VideoPlayer videoPlayer = videoParent.transform.GetChild(0).GetComponent<VideoPlayer>();
 
-            int previousVideo = videoSelected;
-            videoSelected = videoSelected + 1; // Update selected Video
+        // First Video Name and Path
+        string videoFileName, videoPath;   // File Name (is the name of the Video Player GameObject)
 
-            TutorialVideos[videoSelected].gameObject.SetActive(true);
-            TutorialVideos[previousVideo].gameObject.SetActive(false);
-            TutorialVideos[videoSelected].transform.GetChild(0).GetComponent<VideoPlayer>().Play();                
-        } else { // FirstVideo
-            TutorialVideos[videoSelected].gameObject.SetActive(true);
-            TutorialVideos[videoSelected].transform.GetChild(0).GetComponent<VideoPlayer>().Play();
-            isFirtVideo = false;
+        if (videoPlayer)
+        {
+            if (!isFirtVideo)
+            {
+                FindObjectOfType<AudioManager>().Play("[FX] SelectionConfirm"); // Audio FX
+
+                videoPlayer.Stop(); // Stop Previous Video
+
+                int previousVideo = videoIndex;
+                TutorialVideos[previousVideo].gameObject.SetActive(false);
+
+                // Next Video
+                videoIndex++;
+                videoParent = TutorialVideos[videoIndex];
+                videoParent.gameObject.SetActive(true);
+
+                // First Video Name and Path
+                videoFileName = videoParent.transform.GetChild(0).name + ".mp4"; // File Name is the GameObject Name
+                videoPath = System.IO.Path.Combine(Application.streamingAssetsPath, videoFileName);
+
+                videoPlayer = videoParent.transform.GetChild(0).GetComponent<VideoPlayer>();
+                videoPlayer.url = videoPath;
+                videoPlayer.Play();
+            }
+            else // FirstVideo
+            {
+                isFirtVideo = false;
+
+                // First Video Name and Path
+                videoFileName = videoParent.transform.GetChild(0).name + ".mp4"; // File Name is the GameObject Name
+                videoPath = System.IO.Path.Combine(Application.streamingAssetsPath, videoFileName);
+
+                videoParent.SetActive(true);
+                videoPlayer = videoParent.transform.GetChild(0).GetComponent<VideoPlayer>();
+                videoPlayer.url = videoPath;
+                videoPlayer.Play();            
+            }
         }
-        
-        videoCounter.SetText((videoSelected+1) + "/" + (TutorialVideos.Count)); // 1 / ...
+
+        videoCounter.SetText((videoIndex+1) + "/" + (TutorialVideos.Count));
 
         // Defines if the "Continue" button is Enable/Disable
-        continueButton.interactable = (!(videoSelected == (TutorialVideos.Count - 1)));
+        continueButton.interactable = (!(videoIndex == (TutorialVideos.Count - 1)));
         
         if (!continueButton.interactable) {
             Color disableGray;
@@ -184,8 +207,7 @@ public class TutorialManager : MonoBehaviour
         FindObjectOfType<AudioManager>().Play("[FX] SelectionConfirm");
         FindObjectOfType<AudioManager>().FadeAudio("[TK] Monkey Warhol", transitonTime, false); // Fade Out
 
-        TutorialVideos[videoSelected].transform.GetChild(0).GetComponent<VideoPlayer>().Stop();
-        // TutorialVideos[videoSelected].gameObject.SetActive(false);
+        TutorialVideos[videoIndex].transform.GetChild(0).GetComponent<VideoPlayer>().Stop();
 
         LoadNextLevel();     
     }
@@ -195,7 +217,7 @@ public class TutorialManager : MonoBehaviour
         FindObjectOfType<AudioManager>().Play("[FX] SelectionConfirm");
         FindObjectOfType<AudioManager>().FadeAudio("[TK] Monkey Warhol", transitonTime, false); // Fade Out
 
-        TutorialVideos[videoSelected].transform.GetChild(0).GetComponent<VideoPlayer>().Stop();
+        TutorialVideos[videoIndex].transform.GetChild(0).GetComponent<VideoPlayer>().Stop();
 
         StartCoroutine(LoadLevel(SceneManager.GetActiveScene().buildIndex - 1)); // Back to Menu
     }    

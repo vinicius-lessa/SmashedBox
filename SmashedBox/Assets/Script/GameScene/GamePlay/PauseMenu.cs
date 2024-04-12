@@ -1,25 +1,24 @@
+/*
+ * @Documentaion
+ * 
+ * DESCRIPTION
+ *      Esse SCRIPT é responsável por abrir e gerenciar a tela "PAUSE" durante o jogo
+ *      
+ * METHODS and VARIABLES
+ *      var 'GameIsPaused' Public: Porque queremos acessas essa variável a partir de outros scripts
+ *      var 'GameIsPaused' Static: Porque não queremos referênciar esse Scrip especificamente, mas sim verificar de forma rápida e fácil o valor desta variável
+ *      Método "VOID": não é esperado nenhum retorno
+ *      Input.GetKeyDown(KeyCode.Escape): quando a telca "esc" for pressionada
+ *      var public GameObject pauseMenuUI: instancio o GameObject a qual deve ser inserido na interface da UNITY, podendo desta forma manipulá-lo
+ *
+ * DATES
+ *      08/07/2021 - Vinícius Lessa (LessLax): Creation of script
+ *   
+*/
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
-
-/*
-### - DOC
-
-    Criador(es): VINÍCIUS LESSA (LessLax Studios)
-
-    Data: 08/07/2021
-
-    Descrição:
-        Esse SCRIPT é responsável por abrir e gerenciar a tela "PAUSE" durante o jogo
-        
-    Definições:
-        var 'GameIsPaused' Public: Porque queremos acessas essa variável a partir de outros scripts
-        var 'GameIsPaused' Static: Porque não queremos referênciar esse Scrip especificamente, mas sim verificar de forma rápida e fácil o valor desta variável
-        Método "VOID": não é esperado nenhum retorno
-        Input.GetKeyDown(KeyCode.Escape): quando a telca "esc" for pressionada
-        var public GameObject pauseMenuUI: instancio o GameObject a qual deve ser inserido na interface da UNITY, podendo desta forma manipulá-lo
-*/
 
 public class PauseMenu : MonoBehaviour
 {    
