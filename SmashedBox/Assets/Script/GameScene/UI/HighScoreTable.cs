@@ -107,7 +107,6 @@ public class HighScoreTable : MonoBehaviour
         //PlayerPrefs.Save();
     }
 
-
     private void OnEnable()
     {
         EventSystem.current.SetSelectedGameObject(null); //clear selected object
@@ -116,7 +115,7 @@ public class HighScoreTable : MonoBehaviour
 
     private void CreateHighscoreEntryTransform(HighscoreEntry highscoreEntry, Transform container, List<Transform> transformList) 
     {
-        float templateHeight = 25f;
+        float templateHeight = 60f; // Line Padding
 
         Transform entryTransform = Instantiate(entryTemplate, container);
         RectTransform entryRectTransform = entryTransform.GetComponent<RectTransform>();
